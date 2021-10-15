@@ -233,7 +233,7 @@ def update_graph(pop_value, range_value, rate_value, recovery_value):
 
 
 if __name__ == '__main__':
-    app.run_server(port=1813,debug=True, host='localhost')
+    app.run_server(debug=True)
     
     
     
