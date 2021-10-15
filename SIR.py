@@ -19,7 +19,7 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 
-app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
+app = dash.Dash(__name__)
 
 
 server = app.server
