@@ -8,7 +8,7 @@ Created on Thu Sep 30 21:06:51 2021
 
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use("bmh")
+# plt.style.use("bmh")
 from scipy.integrate import solve_ivp
 import dash 
 import dash_html_components as html
