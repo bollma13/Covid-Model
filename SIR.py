@@ -25,7 +25,7 @@ import dash_bootstrap_components as dbc
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
 
 
-# server = app.server()
+server = app.server()
 
 
 def sir_derivs(time, y, beta_0, omega, gamma, epsilon, N):
