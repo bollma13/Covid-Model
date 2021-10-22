@@ -1,7 +1,8 @@
 django
+gunicorn
 django-heroku
-
-
+dash-core-components
+dash-html-components
 
 
 
