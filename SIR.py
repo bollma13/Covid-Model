@@ -6,6 +6,9 @@ Created on Thu Sep 30 21:06:51 2021
 @author: sambollman
 """
 
+#https://community.plotly.com/t/dash-range-slider-which-able-to-interact-with-input-field-that-display-range-slider-value/49476
+#https://codepen.io/chriddyp/pen/bWLwgP.css
+
 import numpy as np
 import matplotlib.pyplot as plt
 plt.style.use("bmh")
@@ -22,7 +25,7 @@ import dash_bootstrap_components as dbc
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
 
 
-server = app.server
+# server = app.server()
 
 
 def sir_derivs(time, y, beta_0, omega, gamma, epsilon, N):
@@ -83,9 +86,10 @@ app.layout = html.Div([
     #             value='Linear',
     #             labelStyle={'display': 'inline-block'}),
     
-    html.Div(style={'columnCount': 2},children=[
+    html.Div(style={'columnCount': 3}, children=[
     
     html.Div(id='slider-output-container0'),
+    
     dcc.Input(id="pop-input", type="number", min=1000, max=10000000,  placeholder="Enter population"),
     dcc.Slider(
         id='pop-slider',
@@ -97,10 +101,11 @@ app.layout = html.Div([
         
     ),
     
-    html.Div(id='slider-output-container1'),
-    dcc.Input(id="range-input", type="number", min=10, max=1000, placeholder="Enter days", style={'marginRight':'10px'}),
+    # html.Div(id='slider-output-container1'),
+    "Days:",
+    dcc.Input(id="range_input", type="number", min=10, max=1000, placeholder="Enter days", style={'marginRight':'10px'}),
     dcc.Slider(
-        id='range-slider',
+        id='range_slider',
         min=10,
         max=1000,
         step=1,
@@ -229,21 +234,32 @@ def update_output0(value):
         
 
 @app.callback(
-    Output('range-slider', 'value'),
-    Output('range-input', 'value'),
-    Input('range-slider', 'value'),
-    Input('range-input', 'value'))
+    Output('range_slider', 'value'),
+    Output('range_input', 'value'),
+    Input('range_slider', 'value'),
+    Input('range_input', 'value'))
 def update_output11(s_value, i_value):
-    if i_value is None:
-        pass
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    
+    
+    if trigger_id == "range_slider" :
+        range_slider = s_value
     else:
-        s_value = i_value
-    return s_value, i_value
-@app.callback(
-    Output('slider-output-container1', 'children'),
-    Input('range-slider', 'value'))
-def update_output1(value):
-    return 'Number of days: "{}"'.format(value)
+        range_slider = i_value
+         
+    if trigger_id == "range_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
+
+
+
+
+
 
 @app.callback(
     Output('rate-slider', 'value'),
@@ -305,7 +321,7 @@ def update_output6(value):
 @app.callback(
     Output('SIR-graph', 'figure'),
     Input('pop-slider', 'value'),
-    Input('range-slider', 'value'),
+    Input('range_input', 'value'),
     Input('rate-slider', 'value'),
     # Input('yaxis-type', 'value'),
     Input('recovery-slider', 'value'),
@@ -378,7 +394,7 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(port=1813,debug=True, host='localhost')
     
     
     
