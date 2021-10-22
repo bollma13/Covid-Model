@@ -6,9 +6,6 @@ Created on Thu Sep 30 21:06:51 2021
 @author: sambollman
 """
 
-#https://community.plotly.com/t/dash-range-slider-which-able-to-interact-with-input-field-that-display-range-slider-value/49476
-#https://codepen.io/chriddyp/pen/bWLwgP.css
-
 import numpy as np
 import matplotlib.pyplot as plt
 plt.style.use("bmh")
@@ -393,8 +390,8 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 
 
 
-if __name__ == '__main__':
-    app.run_server(port=1813,debug=True, host='localhost')
+
+app.run_server(debug=True)
     
     
     
