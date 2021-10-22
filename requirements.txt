@@ -2,6 +2,7 @@ Brotli==1.0.9
 click==8.0.3
 cycler==0.10.0
 dash==2.0.0
+dash-bootstrap-components==1.0.0
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
@@ -20,14 +21,7 @@ plotly==5.3.1
 pyparsing==2.4.7
 python-dateutil==2.8.2
 pytz==2021.3
+scipy==1.7.1
 six==1.16.0
 tenacity==8.0.1
 Werkzeug==2.0.2
-
-
-
-
-
-
-
-
