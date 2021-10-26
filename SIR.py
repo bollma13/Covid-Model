@@ -85,8 +85,8 @@ app.layout = html.Div([
 
     
     
-    html.Div(style={'columnCount': 3}, children=[
-        html.Div(children=[
+    html.Div(style={'display': 'flex', 'flex-direction': 'row'}, children=[
+        html.Div(style={'padding': 10, 'flex': 1},children=[
             
     # Population input, slider
     "Population: ",
@@ -148,13 +148,13 @@ app.layout = html.Div([
     ),
         
         
-    html.Div(style={'columnCount': 1}, children=[
+    html.Div(style={'padding': 10, 'flex': 1}, children=[
 
     # Recovery input, slider
-    html.Div(id='slider-output-container3'),
-    dcc.Input(id="recovery-input", type="number", min=.01, max=1, placeholder="Recovery rate", style={'marginRight':'10px'}),
+    "Recovery rate: ", 
+    dcc.Input(id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'marginRight':'10px'}),
     dcc.Slider(
-        id='recovery-slider',
+        id='recovery_slider',
         min=.01,
         max=1,
         step=.01,
@@ -178,10 +178,10 @@ app.layout = html.Div([
     ),
     
     # Imunity input, slider
-    html.Div(id='slider-output-container4'),
-    dcc.Input(id="immunity-input", type="number", min=.01, max=1,  placeholder="Immunity", style={'marginRight':'10px'}),
+    "Post infection immunity: ",
+    dcc.Input(id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'marginRight':'10px'}),
     dcc.Slider(
-        id='immunity-slider',
+        id='immunity_slider',
         min=.01,
         max=1,
         step=.01,
@@ -206,13 +206,13 @@ app.layout = html.Div([
     ),
     
     
-    html.Div(children=[
+    html.Div(style={'padding': 10, 'flex': 1},children=[
      
     # Vaccinated input, slider 
-    html.Div(id='slider-output-container5'),
-    dcc.Input(id="vaccinated-input", type="number", min=0, max=100, size="50", placeholder="Percent vaccinated"),
+    "Percent vaccinated: ",
+    dcc.Input(id="vaccinated_input", type="number", min=0, max=100, value=0, size="50", placeholder="Percent vaccinated"),
     dcc.Slider(
-        id='vaccinated-slider',
+        id='vaccinated_slider',
         min=0,
         max=100,
         step=.1,
@@ -224,10 +224,10 @@ app.layout = html.Div([
     ),
     
     # Mask input, slider 
-    html.Div(id='slider-output-container6'),
-    dcc.Input(id="mask-input", type="number", min=0, max=100,  placeholder="Percent wearing masks", style={'marginRight':'10px'}),
+    "Percent wearing masks in public: ",
+    dcc.Input(id="mask_input", type="number", min=0, max=100,  value=0, placeholder="Percent wearing masks", style={'marginRight':'10px'}),
     dcc.Slider(
-        id='mask-slider',
+        id='mask_slider',
         min=0,
         max=100,
         step=.1,
@@ -271,7 +271,7 @@ plotly_fig.update_layout(
     Output('pop_input', 'value'),
     Input('pop_slider', 'value'),
     Input('pop_input', 'value'))
-def update_output0(s_value, i_value):
+def update_population_output(s_value, i_value):
     ctx = dash.callback_context
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
@@ -293,7 +293,7 @@ def update_output0(s_value, i_value):
     Output('range_input', 'value'),
     Input('range_slider', 'value'),
     Input('range_input', 'value'))
-def update_output1(s_value, i_value):
+def update_range_output(s_value, i_value):
     ctx = dash.callback_context
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
@@ -315,7 +315,7 @@ def update_output1(s_value, i_value):
     Output('rate_input', 'value'),
     Input('rate_slider', 'value'),
     Input('rate_input', 'value'))
-def update_output2(s_value, i_value):
+def update_rate_output(s_value, i_value):
     ctx = dash.callback_context
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
@@ -330,41 +330,109 @@ def update_output2(s_value, i_value):
         range_input = s_value
     
     return range_slider, range_input
-
-
 @app.callback(
-    Output('slider-output-container3', 'children'),
-    Input('recovery-slider', 'value'))
-def update_output3(value):
-    return 'Recovery rate: "{}"'.format(value)
+    Output('slider-output-container22', 'children'),
+    Input('rate-confidence-slider', 'value'))
+def update_confidence_output1(value):
+    return 'Confidence: {}'.format(value)
+
+# Recovery rate input, slider sync
+@app.callback(
+    Output('recovery_slider', 'value'),
+    Output('recovery_input', 'value'),
+    Input('recovery_slider', 'value'),
+    Input('recovery_input', 'value'))
+def update_recovery_output(s_value, i_value):
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if trigger_id == "recovery_slider" :
+        range_slider = s_value
+    else:
+        range_slider = i_value
+         
+    if trigger_id == "recovery_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
 @app.callback(
     Output('slider-output-container33', 'children'),
     Input('recovery-confidence-slider', 'value'))
-def update_output333(value):
-    return 'Confidence: "{}"'.format(value)
+def update_confidence_output2(value):
+    return 'Confidence: {}'.format(value)
 
+# immunity  input, slider sync
 @app.callback(
-    Output('slider-output-container4', 'children'),
-    Input('immunity-slider', 'value'))
-def update_output4(value):
-    return 'Post infection immunity: "{}"'.format(value)
-@app.callback(
+    Output('immunity_slider', 'value'),
+    Output('immunity_input', 'value'),
+    Input('immunity_slider', 'value'),
+    Input('immunity_input', 'value'))
+def update_immunity_output(s_value, i_value):
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if trigger_id == "immunity_slider" :
+        range_slider = s_value
+    else:
+        range_slider = i_value
+         
+    if trigger_id == "immunity_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
+@app.callback(  # immunity  confidence level output
     Output('slider-output-container44', 'children'),
     Input('immunity-confidence-slider', 'value'))
-def update_output444(value):
-    return 'Confidence: "{}"'.format(value)
+def update_confidence_output3(value):
+    return 'Confidence: {}'.format(value)
+
+# Vaccinated  input, slider sync
+@app.callback(
+    Output('vaccinated_slider', 'value'),
+    Output('vaccinated_input', 'value'),
+    Input('vaccinated_slider', 'value'),
+    Input('vaccinated_input', 'value'))
+def update_vaccinated_output(s_value, i_value):
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if trigger_id == "vaccinated_slider" :
+        range_slider = s_value
+    else:
+        range_slider = i_value
+         
+    if trigger_id == "vaccinated_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
+
 
 @app.callback(
-    Output('slider-output-container5', 'children'),
-    Input('vaccinated-slider', 'value'))
-def update_output5(value):
-    return 'Percent vaccinated: "{}"'.format(value)
-
-@app.callback(
-    Output('slider-output-container6', 'children'),
-    Input('mask-slider', 'value'))
-def update_output6(value):
-    return 'Percent of people wearing masks in public: "{}"'.format(value)
+    Output('mask_slider', 'value'),
+    Output('mask_input', 'value'),
+    Input('mask_slider', 'value'),
+    Input('mask_input', 'value'))
+def update_mask_output(s_value, i_value):
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if trigger_id == "mask_slider" :
+        range_slider = s_value
+    else:
+        range_slider = i_value
+         
+    if trigger_id == "mask_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
 
 @app.callback(
     Output("download-dataframe-csv", "data"),
@@ -384,10 +452,10 @@ def update_output6(value):
     Input('pop_slider', 'value'),
     Input('range_input', 'value'),
     Input('rate_slider', 'value'),
-    Input('recovery-slider', 'value'),
-    Input('immunity-slider', 'value'),
-    Input('vaccinated-slider', 'value'),
-    Input('mask-slider', 'value'),
+    Input('recovery_slider', 'value'),
+    Input('immunity_slider', 'value'),
+    Input('vaccinated_slider', 'value'),
+    Input('mask_slider', 'value'),
     Input('rate-confidence-slider', 'value'),
     Input('recovery-confidence-slider', 'value'),
     # Input('imunity-confidence-slider', 'value'),
@@ -414,9 +482,9 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     ax = fig.add_subplot(111)
     ax.plot(solution.t, solution.y[0], label = 'S')
     ax.plot(solution.t, solution.y[1], label = 'I')
+    ax.plot(solution.t, solution.y[2], label = 'R')
     ax.plot(solution.t, solution.y[1]*rate_confidence_value/100, label = 'I (Lower bound)')
     ax.plot(solution.t, solution.y[1]*(abs((1-rate_confidence_value/100))+1), label = 'I (Upper Bound)')
-    ax.plot(solution.t, solution.y[2], label = 'R')
     ax.plot(solution.t, solution.y[2]*recovery_confidence_value/100, label = 'R (Lower bound)')
     ax.plot(solution.t, solution.y[2]*(abs((1-recovery_confidence_value/100))+1), label = 'R (Upper bound)')
     ax.grid(True)
@@ -444,6 +512,7 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
         )
 
     return plotly_fig
+
 
 
 
