@@ -4,9 +4,10 @@
 Created on Thu Sep 30 21:06:51 2021
 
 @author: sambollman
+#https://community.plotly.com/t/dash-range-slider-which-able-to-interact-with-input-field-that-display-range-slider-value/49476
+#https://codepen.io/chriddyp/pen/bWLwgP.css
+#https://chrisalbon.com/
 """
-
-
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -49,7 +50,6 @@ epsilon = 0.01
 N = 100000
 
 fine_time = np.linspace(time_range[0], time_range[1], 600)
-
 solution = solve_ivp(sir_derivs, time_range, initial_conditions, t_eval=fine_time, args = (beta_0, omega, gamma, epsilon, N))
 
 plt.plot(solution.t, solution.y[0], label = 'S')
@@ -140,7 +140,7 @@ app.layout = html.Div([
         step=1,
         value=100,
         marks={
-            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            80: {'label': '80', 'style': {'color': '#77b0b1'}},
             100: {'label': '100', 'style': {'color': '#f50'}}
             },
         # tooltip={"placement": "top", "always_visible": True}
@@ -172,7 +172,7 @@ app.layout = html.Div([
         step=1,
         value=100,
         marks={
-            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            80: {'label': '80', 'style': {'color': '#77b0b1'}},
             100: {'label': '100', 'style': {'color': '#f50'}}
             }, 
     ),
@@ -199,7 +199,7 @@ app.layout = html.Div([
         step=1,
         value=100,
         marks={
-            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            80: {'label': '80', 'style': {'color': '#77b0b1'}},
             100: {'label': '100', 'style': {'color': '#f50'}}
             },
     )]
@@ -397,11 +397,8 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                  immunity_value, vaccinated_value, mask_value, rate_confidence_value,
                  recovery_confidence_value):
     
-    
     mask_value = abs(((mask_value/100)*.8)-1)
-    
     vaccinated_value = abs(((vaccinated_value/100)*.9)-1)
-    
     
     time_range = [0, range_value]
     initial_conditions = [pop_value, 100, 0]
@@ -409,12 +406,9 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     gamma = recovery_value
     epsilon = immunity_value * recovery_value 
     N = pop_value
-    
 
     fine_time = np.linspace(time_range[0], time_range[1], 600)
-    
     solution = solve_ivp(sir_derivs, time_range, initial_conditions, t_eval=fine_time, args = (beta_0, omega, gamma, epsilon, N))
-    
    
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -430,7 +424,6 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 
     plotly_fig = mpl_to_plotly(fig)
     
-   
     
     plotly_fig.update_layout(
                     updatemenus=[dict(buttons=[
@@ -447,12 +440,8 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                     plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
                     yaxis_title="Population", 
                     font=dict(
-                        size=16, color="#ffffff")
-                    
+                        size=16, color="#ffffff")  
         )
-    
-
-    
 
     return plotly_fig
 
@@ -460,3 +449,7 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 
 if __name__ == '__main__':
    app.run_server(debug = True)
+    
+    
+    
+    
