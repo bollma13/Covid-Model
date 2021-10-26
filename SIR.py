@@ -6,6 +6,8 @@ Created on Thu Sep 30 21:06:51 2021
 @author: sambollman
 """
 
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 plt.style.use("bmh")
@@ -65,123 +67,179 @@ ax.plot(solution.t, solution.y[1], label = 'I')
 ax.plot(solution.t, solution.y[2], label = 'R')
 plt.xlabel("time")
 ax.grid(True)
+ax.legend(["Susceptible", "Infected", "Recovered"])
+
 plotly_fig = mpl_to_plotly(fig)
 
 
 app.layout = html.Div([
-    
-    html.Div(children=[
-    
+        html.Div(children=[
+            
     html.H1(children='COVID-19 Model', style={'textAlign': 'center', 'color': '#034efc'}),
     # html.Div(children = '''SIR Graph'''),
     
-    dcc.Graph(id= 'SIR-graph', figure=plotly_fig)]),
+    dcc.Graph(id= 'SIR-graph', figure=plotly_fig),
     
-    # dcc.RadioItems(
-    #             id='yaxis-type',
-    #             options=[{'label': i, 'value': i} for i in ['Linear', 'Log']],
-    #             value='Linear',
-    #             labelStyle={'display': 'inline-block'}),
+    html.Button("Download CSV", id="btn_csv"),
+    dcc.Download(id="download-dataframe-csv"),
+    
+    ]),
+
+    
     
     html.Div(style={'columnCount': 3}, children=[
-    
-    html.Div(id='slider-output-container0'),
-    
-    dcc.Input(id="pop-input", type="number", min=1000, max=10000000,  placeholder="Enter population"),
+        html.Div(children=[
+            
+    # Population input, slider
+    "Population: ",
+    dcc.Input(id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population"),
     dcc.Slider(
-        id='pop-slider',
+        id='pop_slider',
         min=1000,
         max=10000000,
         step=1000,
         value=100000,
-  
-        
+        marks={
+            1000: {'label': '1000', 'style': {'color': '#77b0b1'}},
+            10000000: {'label': '10000000', 'style': {'color': '#f50'}}
+            },
     ),
     
-    # html.Div(id='slider-output-container1'),
-    "Days:",
-    dcc.Input(id="range_input", type="number", min=10, max=1000, placeholder="Enter days", style={'marginRight':'10px'}),
+    # Range(days) input, slider
+    "Days: ",
+    dcc.Input(id="range_input", type="number", min=10, max=1000, value=200, placeholder="Days", style={'marginRight':'10px'}),
     dcc.Slider(
         id='range_slider',
         min=10,
         max=1000,
         step=1,
         value=200,
+        marks={
+            10: {'label': '10', 'style': {'color': '#77b0b1'}},
+            1000: {'label': '1000', 'style': {'color': '#f50'}}
+            },
     ),
 
-    html.Div(id='slider-output-container2'),
-    dcc.Input(id="rate-input", type="number", min=.0001, max=1, placeholder="Enter infection rate", style={'marginRight':'10px'}),
+    # Infection Rate input, slider
+    "Infection rate: ",    
+    dcc.Input(id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'marginRight':'10px'}),
     dcc.Slider(
-        id='rate-slider',
+        id='rate_slider',
         min=.0001,
         max=1,
         step=.01,
         value=5e-1,
-    ),  
+        marks={
+            .0001: {'label': '0.0001', 'style': {'color': '#77b0b1'}},
+            1: {'label': '1.0', 'style': {'color': '#f50'}}
+            },
+    ),          # Infection Rate Confidence slider
     html.Div(id='slider-output-container22'),
     dcc.Slider(
         id='rate-confidence-slider',
-        min=0,
-        max=.2,
-        step=.01,
-        value=0,
-        
+        min=80,
+        max=100,
+        step=1,
+        value=100,
+        marks={
+            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            100: {'label': '100', 'style': {'color': '#f50'}}
+            },
+        # tooltip={"placement": "top", "always_visible": True}
+    )]
     ),
+        
+        
+    html.Div(style={'columnCount': 1}, children=[
+
+    # Recovery input, slider
     html.Div(id='slider-output-container3'),
-    dcc.Input(id="recovery-input", type="number", min=.01, max=1, placeholder="Enter recovery rate", style={'marginRight':'10px'}),
+    dcc.Input(id="recovery-input", type="number", min=.01, max=1, placeholder="Recovery rate", style={'marginRight':'10px'}),
     dcc.Slider(
         id='recovery-slider',
         min=.01,
         max=1,
         step=.01,
         value=.1,
-    ),
+        marks={
+            .01: {'label': '0.01', 'style': {'color': '#77b0b1'}},
+            1: {'label': '1.0', 'style': {'color': '#f50'}}
+            },
+    ),          #  Recovery confidence slider
     html.Div(id='slider-output-container33'),
     dcc.Slider(
         id='recovery-confidence-slider',
-        min=0,
-        max=.2,
-        step=.01,
-        value=0,
-        
+        min=80,
+        max=100,
+        step=1,
+        value=100,
+        marks={
+            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            100: {'label': '100', 'style': {'color': '#f50'}}
+            }, 
     ),
+    
+    # Imunity input, slider
     html.Div(id='slider-output-container4'),
-    dcc.Input(id="immunity-input", type="number", min=.01, max=1,  placeholder="Enter immunity", style={'marginRight':'10px'}),
+    dcc.Input(id="immunity-input", type="number", min=.01, max=1,  placeholder="Immunity", style={'marginRight':'10px'}),
     dcc.Slider(
         id='immunity-slider',
         min=.01,
         max=1,
         step=.01,
-        value=.1,      
-    ),
+        value=.1,
+        marks={
+            .01: {'label': '0.01', 'style': {'color': '#77b0b1'}},
+            1: {'label': '1.0', 'style': {'color': '#f50'}}
+            },
+    ),      # Imunity confidence slider
     html.Div(id='slider-output-container44'),
     dcc.Slider(
         id='immunity-confidence-slider',
-        min=0,
-        max=.2,
-        step=.01,
-        value=0,
-    
+        min=80,
+        max=100,
+        step=1,
+        value=100,
+        marks={
+            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            100: {'label': '100', 'style': {'color': '#f50'}}
+            },
+    )]
     ),
+    
+    
+    html.Div(children=[
+     
+    # Vaccinated input, slider 
     html.Div(id='slider-output-container5'),
-    dcc.Input(id="vaccinated-input", type="number", min=0, max=100, size="50", placeholder="Enter % vaccinated"),
+    dcc.Input(id="vaccinated-input", type="number", min=0, max=100, size="50", placeholder="Percent vaccinated"),
     dcc.Slider(
         id='vaccinated-slider',
         min=0,
         max=100,
         step=.1,
         value=0,
-        
+        marks={
+            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            100: {'label': '100', 'style': {'color': '#f50'}}
+            },
     ),
     
+    # Mask input, slider 
     html.Div(id='slider-output-container6'),
-    dcc.Input(id="mask-input", type="number", min=0, max=100,  placeholder="Enter % wearing masks", style={'marginRight':'10px'}),
+    dcc.Input(id="mask-input", type="number", min=0, max=100,  placeholder="Percent wearing masks", style={'marginRight':'10px'}),
     dcc.Slider(
         id='mask-slider',
         min=0,
         max=100,
         step=.1,
         value=0,
+        marks={
+            0: {'label': '0', 'style': {'color': '#77b0b1'}},
+            100: {'label': '100', 'style': {'color': '#f50'}}
+            },
+        
+    )]
         
     ),
     
@@ -189,57 +247,57 @@ app.layout = html.Div([
     
     ])
 
+# Update graph: Add log/lin buttons, size, color, legend, axis
+plotly_fig.update_layout(
+                    updatemenus=[dict(buttons=[
+                    dict(
+                        label="Linear",  
+                        method="relayout", 
+                        args=[{"yaxis.type": "linear"}]),
+                    dict(
+                        label="Log", 
+                        method="relayout", 
+                        args=[{"yaxis.type": "log"}])])],
+                    
+                    width=1350, height=500, paper_bgcolor='#222222',
+                    plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
+                    yaxis_title="Population", 
+                    font=dict(
+                        size=16, color="#ffffff")      
+        )
 
-plotly_fig.update_layout(title={
-                            'text': "SIR Graph",
-                            'x':0.05},
 
-            width=1000, height=500, 
-            paper_bgcolor='#636363',plot_bgcolor ='#e3e3e3', 
-            xaxis_title="Days", yaxis_title="Population", 
-            font=dict(size=18, color="#ffffff"))
-
-plotly_fig.update_layout(updatemenus=[dict(buttons=[
-                      dict(label="Linear",  
-                          method="relayout", 
-                          args=[{"yaxis.type": "linear"}]),
-                      dict(label="Log", 
-                          method="relayout", 
-                          args=[{"yaxis.type": "log"}])])])
-
-
-
+# Population input, slider sync
 @app.callback(
-    Output('pop-slider', 'value'),
-    Output('pop-input', 'value'),
-    Input('pop-slider', 'value'),
-    Input('pop-input', 'value'))
-def update_output00(s_value, i_value):
-    if i_value is None:
-        pass
+    Output('pop_slider', 'value'),
+    Output('pop_input', 'value'),
+    Input('pop_slider', 'value'),
+    Input('pop_input', 'value'))
+def update_output0(s_value, i_value):
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if trigger_id == "pop_slider" :
+        range_slider = s_value
     else:
-        s_value = i_value
-    return s_value, i_value
-
-@app.callback(
-    Output('slider-output-container0', 'children'),
-    Input('pop-slider', 'value'))
-def update_output0(value):
-    return 'Population: "{}"'.format(value)
-
-
+        range_slider = i_value
+         
+    if trigger_id == "pop_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
         
-
+# Range(days) input, slider sync
 @app.callback(
     Output('range_slider', 'value'),
     Output('range_input', 'value'),
     Input('range_slider', 'value'),
     Input('range_input', 'value'))
-def update_output11(s_value, i_value):
+def update_output1(s_value, i_value):
     ctx = dash.callback_context
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
-    
-    
     
     if trigger_id == "range_slider" :
         range_slider = s_value
@@ -253,32 +311,28 @@ def update_output11(s_value, i_value):
     
     return range_slider, range_input
 
-
-
-
-
-
+# Infection rate input, slider sync
 @app.callback(
-    Output('rate-slider', 'value'),
-    Output('rate-input', 'value'),
-    Input('rate-slider', 'value'),
-    Input('rate-input', 'value'))
-def update_output22(s_value, i_value):
-    if i_value is None:
-        pass
+    Output('rate_slider', 'value'),
+    Output('rate_input', 'value'),
+    Input('rate_slider', 'value'),
+    Input('rate_input', 'value'))
+def update_output2(s_value, i_value):
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
+    
+    if trigger_id == "rate_slider" :
+        range_slider = s_value
     else:
-        s_value = i_value
-    return s_value, i_value
-@app.callback(
-    Output('slider-output-container2', 'children'),
-    Input('rate-slider', 'value'))
-def update_output2(value):
-    return 'Infection Rate: "{}"'.format(value)
-@app.callback(
-    Output('slider-output-container22', 'children'),
-    Input('rate-confidence-slider', 'value'))
-def update_output000(value):
-    return 'Uncertianty: "{}"'.format(value)
+        range_slider = i_value
+         
+    if trigger_id == "rate_input" :
+          range_input = i_value 
+    else :
+        range_input = s_value
+    
+    return range_slider, range_input
+
 
 @app.callback(
     Output('slider-output-container3', 'children'),
@@ -289,7 +343,7 @@ def update_output3(value):
     Output('slider-output-container33', 'children'),
     Input('recovery-confidence-slider', 'value'))
 def update_output333(value):
-    return 'Uncertianty: "{}"'.format(value)
+    return 'Confidence: "{}"'.format(value)
 
 @app.callback(
     Output('slider-output-container4', 'children'),
@@ -300,7 +354,7 @@ def update_output4(value):
     Output('slider-output-container44', 'children'),
     Input('immunity-confidence-slider', 'value'))
 def update_output444(value):
-    return 'Uncertianty: "{}"'.format(value)
+    return 'Confidence: "{}"'.format(value)
 
 @app.callback(
     Output('slider-output-container5', 'children'),
@@ -314,21 +368,36 @@ def update_output5(value):
 def update_output6(value):
     return 'Percent of people wearing masks in public: "{}"'.format(value)
 
+@app.callback(
+    Output("download-dataframe-csv", "data"),
+    Input("btn_csv", "n_clicks"),
+    prevent_initial_call=True,
+)
 
+# def download_data(n_clicks):
+#     return dcc.send_data_frame(plotly_fig.to_csv, "mydf.csv")
+
+
+
+
+# Update Graph callback, interaction
 @app.callback(
     Output('SIR-graph', 'figure'),
-    Input('pop-slider', 'value'),
+    Input('pop_slider', 'value'),
     Input('range_input', 'value'),
-    Input('rate-slider', 'value'),
-    # Input('yaxis-type', 'value'),
+    Input('rate_slider', 'value'),
     Input('recovery-slider', 'value'),
     Input('immunity-slider', 'value'),
     Input('vaccinated-slider', 'value'),
-    Input('mask-slider', 'value')
+    Input('mask-slider', 'value'),
+    Input('rate-confidence-slider', 'value'),
+    Input('recovery-confidence-slider', 'value'),
+    # Input('imunity-confidence-slider', 'value'),
     )
 
 def update_graph(pop_value, range_value, rate_value, recovery_value, 
-                 immunity_value, vaccinated_value, mask_value):
+                 immunity_value, vaccinated_value, mask_value, rate_confidence_value,
+                 recovery_confidence_value):
     
     
     mask_value = abs(((mask_value/100)*.8)-1)
@@ -353,39 +422,41 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     ax = fig.add_subplot(111)
     ax.plot(solution.t, solution.y[0], label = 'S')
     ax.plot(solution.t, solution.y[1], label = 'I')
+    ax.plot(solution.t, solution.y[1]*rate_confidence_value/100, label = 'I (Lower bound)')
+    ax.plot(solution.t, solution.y[1]*(abs((1-rate_confidence_value/100))+1), label = 'I (Upper Bound)')
     ax.plot(solution.t, solution.y[2], label = 'R')
+    ax.plot(solution.t, solution.y[2]*recovery_confidence_value/100, label = 'R (Lower bound)')
+    ax.plot(solution.t, solution.y[2]*(abs((1-recovery_confidence_value/100))+1), label = 'R (Upper bound)')
     ax.grid(True)
+    ax.legend(["Susceptible", "Infected", "Recovered"])
+
     plotly_fig = mpl_to_plotly(fig)
     
+   
     
-    # if yaxis_value == 'Linear':
-    #     plotly_fig.update_yaxes(type='linear' )
+    plotly_fig.update_layout(
+                    updatemenus=[dict(buttons=[
+                    dict(
+                        label="Linear",  
+                        method="relayout", 
+                        args=[{"yaxis.type": "linear"}]),
+                    dict(
+                        label="Log", 
+                        method="relayout", 
+                        args=[{"yaxis.type": "log"}])])],
+                    
+                    width=1350, height=500, paper_bgcolor='#222222',
+                    plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
+                    yaxis_title="Population", 
+                    font=dict(
+                        size=16, color="#ffffff")
+                    
+        )
     
-    # if yaxis_value == 'Log':
-    #     plotly_fig.update_yaxes(type='log', range=[0,7])
-    
-    plotly_fig.update_layout(updatemenus=[dict(buttons=[
-                      dict(label="Linear",  
-                          method="relayout", 
-                          args=[{"yaxis.type": "linear"}]),
-                      dict(label="Log", 
-                          method="relayout", 
-                          args=[{"yaxis.type": "log"}])])])
-    
-    plotly_fig.update_layout(title={
-                            'text': "SIR Graph",
-                            'x':0.05},
 
-            width=1350, height=500, 
-            paper_bgcolor='#222222',plot_bgcolor ='#e3e3e3', 
-            xaxis_title="Days", yaxis_title="Population", 
-            font=dict(size=16, color="#ffffff"))
-    
-    
     
 
     return plotly_fig
-
 
 
 
