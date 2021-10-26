@@ -10,7 +10,7 @@ Created on Thu Sep 30 21:06:51 2021
 
 import numpy as np
 import matplotlib.pyplot as plt
-plt.style.use("bmh")
+#plt.style.use("bmh")
 from scipy.integrate import solve_ivp
 import dash 
 import dash_html_components as html
@@ -22,9 +22,7 @@ import dash_bootstrap_components as dbc
 
 
 app = dash.Dash(__name__)
-
-
-server = app.server()
+server = app.server
 
 
 def sir_derivs(time, y, beta_0, omega, gamma, epsilon, N):
@@ -462,7 +460,8 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 
 
 
-app.run_server(debug=True)
+if __name__ == '__main__':
+    app.run_server(debug = True)
     
     
     
