@@ -9,6 +9,6 @@ dash_html_components
 dash_core_components 
 plotly 
 dash_bootstrap_components 
-
+dash_extensions
 
 
