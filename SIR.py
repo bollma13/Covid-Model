@@ -21,7 +21,7 @@ import dash_core_components as dcc
 from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
-# from dash_extensions.snippets import send_data_frame
+from dash_extensions.snippets import send_data_frame
 
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
@@ -455,8 +455,8 @@ df = pd.DataFrame({
     prevent_initial_call=True,
 )
 
-#def download_data(n_clicks):
-#    return dcc.send_data_frame(df.to_csv, "mydf.csv")
+def download_data(n_clicks):
+    return dcc.send_data_frame(df.to_csv, "mydf.csv")
 
 
 
