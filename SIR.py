@@ -10,6 +10,7 @@ Created on Thu Sep 30 21:06:51 2021
 """
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 plt.style.use("bmh")
 from scipy.integrate import solve_ivp
@@ -20,6 +21,7 @@ import dash_core_components as dcc
 from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+from dash_extensions.snippets import send_data_frame
 
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
@@ -274,18 +276,23 @@ plotly_fig.update_layout(
 def update_population_output(s_value, i_value):
     ctx = dash.callback_context
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
-    
+
+        
     if trigger_id == "pop_slider" :
-        range_slider = s_value
+        pop_slider = s_value
     else:
-        range_slider = i_value
-         
-    if trigger_id == "pop_input" :
-          range_input = i_value 
-    else :
-        range_input = s_value
+        pop_slider = i_value
     
-    return range_slider, range_input
+    if trigger_id == "pop_input":
+        pop_input = i_value 
+    else:
+        pop_input = s_value
+            
+        
+    if i_value != None: 
+        return pop_slider, pop_input
+    else:
+        return s_value, s_value
         
 # Range(days) input, slider sync
 @app.callback(
@@ -304,7 +311,7 @@ def update_range_output(s_value, i_value):
          
     if trigger_id == "range_input" :
           range_input = i_value 
-    else :
+    else:
         range_input = s_value
     
     return range_slider, range_input
@@ -320,16 +327,16 @@ def update_rate_output(s_value, i_value):
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
     if trigger_id == "rate_slider" :
-        range_slider = s_value
+        rate_slider = s_value
     else:
-        range_slider = i_value
+        rate_slider = i_value
          
     if trigger_id == "rate_input" :
-          range_input = i_value 
-    else :
-        range_input = s_value
+          rate_input = i_value 
+    else:
+        rate_input = s_value
     
-    return range_slider, range_input
+    return rate_slider, rate_input
 @app.callback(
     Output('slider-output-container22', 'children'),
     Input('rate-confidence-slider', 'value'))
@@ -347,16 +354,16 @@ def update_recovery_output(s_value, i_value):
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
     if trigger_id == "recovery_slider" :
-        range_slider = s_value
+        recovery_slider = s_value
     else:
-        range_slider = i_value
+        recovery_slider = i_value
          
     if trigger_id == "recovery_input" :
-          range_input = i_value 
-    else :
-        range_input = s_value
+          recovery_input = i_value 
+    else:
+        recovery_input = s_value
     
-    return range_slider, range_input
+    return recovery_slider, recovery_input
 @app.callback(
     Output('slider-output-container33', 'children'),
     Input('recovery-confidence-slider', 'value'))
@@ -374,16 +381,16 @@ def update_immunity_output(s_value, i_value):
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
     if trigger_id == "immunity_slider" :
-        range_slider = s_value
+        immunity_slider = s_value
     else:
-        range_slider = i_value
+        immunity_slider = i_value
          
     if trigger_id == "immunity_input" :
-          range_input = i_value 
-    else :
-        range_input = s_value
+          immunity_input = i_value 
+    else:
+        immunity_input = s_value
     
-    return range_slider, range_input
+    return immunity_slider, immunity_input
 @app.callback(  # immunity  confidence level output
     Output('slider-output-container44', 'children'),
     Input('immunity-confidence-slider', 'value'))
@@ -401,18 +408,18 @@ def update_vaccinated_output(s_value, i_value):
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
     if trigger_id == "vaccinated_slider" :
-        range_slider = s_value
+        vaccinated_slider = s_value
     else:
-        range_slider = i_value
+        vaccinated_slider = i_value
          
     if trigger_id == "vaccinated_input" :
-          range_input = i_value 
-    else :
-        range_input = s_value
+          vaccinated_input = i_value 
+    else:
+        vaccinated_input = s_value
     
-    return range_slider, range_input
+    return vaccinated_slider, vaccinated_input
 
-
+# Masked  input, slider sync
 @app.callback(
     Output('mask_slider', 'value'),
     Output('mask_input', 'value'),
@@ -423,16 +430,24 @@ def update_mask_output(s_value, i_value):
     trigger_id = ctx.triggered[0]["prop_id"].split(".")[0]
     
     if trigger_id == "mask_slider" :
-        range_slider = s_value
+        mask_slider = s_value
     else:
-        range_slider = i_value
-         
+        mask_slider = i_value
     if trigger_id == "mask_input" :
-          range_input = i_value 
-    else :
-        range_input = s_value
+          mask_input = i_value 
+    else:
+        mask_input = s_value
     
-    return range_slider, range_input
+    return mask_slider, mask_input
+
+
+df = pd.DataFrame({
+    'S':[solution.t, solution.y[0]],
+    'I':[solution.t, solution.y[1]],
+    'R':[solution.t, solution.y[2]],
+    
+})
+
 
 @app.callback(
     Output("download-dataframe-csv", "data"),
@@ -440,15 +455,15 @@ def update_mask_output(s_value, i_value):
     prevent_initial_call=True,
 )
 
-# def download_data(n_clicks):
-#     return dcc.send_data_frame(plotly_fig.to_csv, "mydf.csv")
-
+def download_data(n_clicks):
+    return send_data_frame(df.to_csv, "mydf.csv")
 
 
 
 # Update Graph callback, interaction
 @app.callback(
     Output('SIR-graph', 'figure'),
+    
     Input('pop_slider', 'value'),
     Input('range_input', 'value'),
     Input('rate_slider', 'value'),
@@ -483,10 +498,10 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     ax.plot(solution.t, solution.y[0], label = 'S')
     ax.plot(solution.t, solution.y[1], label = 'I')
     ax.plot(solution.t, solution.y[2], label = 'R')
-    ax.plot(solution.t, solution.y[1]*rate_confidence_value/100, label = 'I (Lower bound)')
-    ax.plot(solution.t, solution.y[1]*(abs((1-rate_confidence_value/100))+1), label = 'I (Upper Bound)')
-    ax.plot(solution.t, solution.y[2]*recovery_confidence_value/100, label = 'R (Lower bound)')
-    ax.plot(solution.t, solution.y[2]*(abs((1-recovery_confidence_value/100))+1), label = 'R (Upper bound)')
+    # ax.plot(solution.t, solution.y[1]*rate_confidence_value/100, label = 'I (Lower bound)')
+    # ax.plot(solution.t, solution.y[1]*(abs((1-rate_confidence_value/100))+1), label = 'I (Upper Bound)')
+    # ax.plot(solution.t, solution.y[2]*recovery_confidence_value/100, label = 'R (Lower bound)')
+    # ax.plot(solution.t, solution.y[2]*(abs((1-recovery_confidence_value/100))+1), label = 'R (Upper bound)')
     ax.grid(True)
     ax.legend(["Susceptible", "Infected", "Recovered"])
 
@@ -510,8 +525,14 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                     font=dict(
                         size=16, color="#ffffff")  
         )
-
+    
+    
+    
     return plotly_fig
+
+
+
+
 
 
 if __name__ == '__main__':
