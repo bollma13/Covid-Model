@@ -12,16 +12,17 @@ Created on Thu Sep 30 21:06:51 2021
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-plt.style.use("bmh")
+# plt.style.use("bmh")
 from scipy.integrate import solve_ivp
 import dash 
 import dash_html_components as html
 import dash_core_components as dcc
-# import plotly.graph_objects as go
+import plotly.graph_objects as go
 from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
-from dash_extensions.snippets import send_data_frame
+
+from flask import request, Response
 
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
@@ -75,24 +76,36 @@ plotly_fig = mpl_to_plotly(fig)
 app.layout = html.Div([
         html.Div(children=[
             
-    html.H1(children='COVID-19 Model', style={'textAlign': 'center', 'color': '#034efc'}),
-    # html.Div(children = '''SIR Graph'''),
+    html.H1(
+    # children='COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 30}
+    ),
+    html.Div(children = 'COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 40, 'padding': "1px"}),
     
     dcc.Graph(id= 'SIR-graph', figure=plotly_fig),
     
-    html.Button("Download CSV", id="btn_csv"),
-    dcc.Download(id="download-dataframe-csv"),
+    html.Div(style={'padding': 15, 'flex': 1},children=[
+    html.A(
+    "Download CSV",
+    id="download_csv",
+    href="#",
+    className="btn btn-outline-secondary btn-sm",
+
+    style={'textAlign': 'center', 'color': '#ffffff', 'padding': '6px', 'fontSize': 15, 'borderColor':"#ffffff"},
+    
+    )
+    
+    ])
     
     ]),
 
     
     
     html.Div(style={'display': 'flex', 'flex-direction': 'row'}, children=[
-        html.Div(style={'padding': 10, 'flex': 1},children=[
+        html.Div(style={'padding': 15, 'flex': 1},children=[
             
     # Population input, slider
     "Population: ",
-    dcc.Input(id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population"),
+    dcc.Input(debounce=True, id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population"),
     dcc.Slider(
         id='pop_slider',
         min=1000,
@@ -107,7 +120,7 @@ app.layout = html.Div([
     
     # Range(days) input, slider
     "Days: ",
-    dcc.Input(id="range_input", type="number", min=10, max=1000, value=200, placeholder="Days", style={'marginRight':'10px'}),
+    dcc.Input(debounce=True, id="range_input", type="number", min=10, max=1000, value=200, placeholder="Days", style={'marginRight':'10px'}),
     dcc.Slider(
         id='range_slider',
         min=10,
@@ -122,7 +135,7 @@ app.layout = html.Div([
 
     # Infection Rate input, slider
     "Infection rate: ",    
-    dcc.Input(id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'marginRight':'10px'}),
+    dcc.Input(debounce=True, id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'marginRight':'10px'}),
     dcc.Slider(
         id='rate_slider',
         min=.0001,
@@ -141,6 +154,7 @@ app.layout = html.Div([
         max=100,
         step=1,
         value=100,
+        tooltip={"placement": "top"},
         marks={
             80: {'label': '80', 'style': {'color': '#77b0b1'}},
             100: {'label': '100', 'style': {'color': '#f50'}}
@@ -154,7 +168,7 @@ app.layout = html.Div([
 
     # Recovery input, slider
     "Recovery rate: ", 
-    dcc.Input(id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'marginRight':'10px'}),
+    dcc.Input(debounce=True, id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'marginRight':'10px'}),
     dcc.Slider(
         id='recovery_slider',
         min=.01,
@@ -173,6 +187,7 @@ app.layout = html.Div([
         max=100,
         step=1,
         value=100,
+        tooltip={"placement": "top"},
         marks={
             80: {'label': '80', 'style': {'color': '#77b0b1'}},
             100: {'label': '100', 'style': {'color': '#f50'}}
@@ -181,7 +196,7 @@ app.layout = html.Div([
     
     # Imunity input, slider
     "Post infection immunity: ",
-    dcc.Input(id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'marginRight':'10px'}),
+    dcc.Input(debounce=True, id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'marginRight':'10px'}),
     dcc.Slider(
         id='immunity_slider',
         min=.01,
@@ -200,6 +215,7 @@ app.layout = html.Div([
         max=100,
         step=1,
         value=100,
+        tooltip={"placement": "top"},
         marks={
             80: {'label': '80', 'style': {'color': '#77b0b1'}},
             100: {'label': '100', 'style': {'color': '#f50'}}
@@ -212,7 +228,7 @@ app.layout = html.Div([
      
     # Vaccinated input, slider 
     "Percent vaccinated: ",
-    dcc.Input(id="vaccinated_input", type="number", min=0, max=100, value=0, size="50", placeholder="Percent vaccinated"),
+    dcc.Input(debounce=True, id="vaccinated_input", type="number", min=0, max=100, value=0, size="50", placeholder="% vaccinated"),
     dcc.Slider(
         id='vaccinated_slider',
         min=0,
@@ -227,7 +243,7 @@ app.layout = html.Div([
     
     # Mask input, slider 
     "Percent wearing masks in public: ",
-    dcc.Input(id="mask_input", type="number", min=0, max=100,  value=0, placeholder="Percent wearing masks", style={'marginRight':'10px'}),
+    dcc.Input(debounce=True, id="mask_input", type="number", min=0, max=100,  value=0, placeholder="% wearing masks", style={'marginRight':'10px'}),
     dcc.Slider(
         id='mask_slider',
         min=0,
@@ -247,7 +263,7 @@ app.layout = html.Div([
     
     ])
 
-# Update graph: Add log/lin buttons, size, color, legend, axis
+# Update graph initially: Add log/lin buttons, size, color, legend, axis
 plotly_fig.update_layout(
                     updatemenus=[dict(buttons=[
                     dict(
@@ -314,7 +330,10 @@ def update_range_output(s_value, i_value):
     else:
         range_input = s_value
     
-    return range_slider, range_input
+    if i_value != None: 
+        return range_slider, range_input
+    else:
+        return s_value, s_value
 
 # Infection rate input, slider sync
 @app.callback(
@@ -336,12 +355,15 @@ def update_rate_output(s_value, i_value):
     else:
         rate_input = s_value
     
-    return rate_slider, rate_input
+    if i_value != None: 
+        return rate_slider, rate_input
+    else:
+        return s_value, s_value
 @app.callback(
     Output('slider-output-container22', 'children'),
     Input('rate-confidence-slider', 'value'))
 def update_confidence_output1(value):
-    return 'Confidence: {}'.format(value)
+    return 'Confidence: {}'.format(value), '%'
 
 # Recovery rate input, slider sync
 @app.callback(
@@ -363,12 +385,15 @@ def update_recovery_output(s_value, i_value):
     else:
         recovery_input = s_value
     
-    return recovery_slider, recovery_input
+    if i_value != None: 
+        return recovery_slider, recovery_input
+    else:
+        return s_value, s_value
 @app.callback(
     Output('slider-output-container33', 'children'),
     Input('recovery-confidence-slider', 'value'))
 def update_confidence_output2(value):
-    return 'Confidence: {}'.format(value)
+    return 'Confidence: {}'.format(value), '%'
 
 # immunity  input, slider sync
 @app.callback(
@@ -390,12 +415,15 @@ def update_immunity_output(s_value, i_value):
     else:
         immunity_input = s_value
     
-    return immunity_slider, immunity_input
+    if i_value != None: 
+        return immunity_slider, immunity_input
+    else:
+        return s_value, s_value
 @app.callback(  # immunity  confidence level output
     Output('slider-output-container44', 'children'),
     Input('immunity-confidence-slider', 'value'))
 def update_confidence_output3(value):
-    return 'Confidence: {}'.format(value)
+    return 'Confidence: {}'.format(value), '%'
 
 # Vaccinated  input, slider sync
 @app.callback(
@@ -417,7 +445,10 @@ def update_vaccinated_output(s_value, i_value):
     else:
         vaccinated_input = s_value
     
-    return vaccinated_slider, vaccinated_input
+    if i_value != None: 
+        return vaccinated_slider, vaccinated_input
+    else:
+        return s_value, s_value
 
 # Masked  input, slider sync
 @app.callback(
@@ -438,32 +469,18 @@ def update_mask_output(s_value, i_value):
     else:
         mask_input = s_value
     
-    return mask_slider, mask_input
+    if i_value != None: 
+        return mask_slider, mask_input
+    else:
+        return s_value, s_value
 
-
-df = pd.DataFrame({
-    'S':[solution.t, solution.y[0]],
-    'I':[solution.t, solution.y[1]],
-    'R':[solution.t, solution.y[2]],
-    
-})
-
-
-@app.callback(
-    Output("download-dataframe-csv", "data"),
-    Input("btn_csv", "n_clicks"),
-    prevent_initial_call=True,
-)
-
-def download_data(n_clicks):
-    return dcc.send_data_frame(df.to_csv, "mydf.csv")
 
 
 
 # Update Graph callback, interaction
 @app.callback(
     Output('SIR-graph', 'figure'),
-    
+    # Output('download_csv', 'n_clicks'),
     Input('pop_slider', 'value'),
     Input('range_input', 'value'),
     Input('rate_slider', 'value'),
@@ -473,12 +490,13 @@ def download_data(n_clicks):
     Input('mask_slider', 'value'),
     Input('rate-confidence-slider', 'value'),
     Input('recovery-confidence-slider', 'value'),
-    # Input('imunity-confidence-slider', 'value'),
+    Input('immunity-confidence-slider', 'value'),
+    # Input('some_input', 'value')
     )
 
 def update_graph(pop_value, range_value, rate_value, recovery_value, 
                  immunity_value, vaccinated_value, mask_value, rate_confidence_value,
-                 recovery_confidence_value):
+                 recovery_confidence_value, immunity_confidence_value):
     
     mask_value = abs(((mask_value/100)*.8)-1)
     vaccinated_value = abs(((vaccinated_value/100)*.9)-1)
@@ -495,13 +513,27 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
    
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.plot(solution.t, solution.y[0], label = 'S')
-    ax.plot(solution.t, solution.y[1], label = 'I')
-    ax.plot(solution.t, solution.y[2], label = 'R')
-    # ax.plot(solution.t, solution.y[1]*rate_confidence_value/100, label = 'I (Lower bound)')
-    # ax.plot(solution.t, solution.y[1]*(abs((1-rate_confidence_value/100))+1), label = 'I (Upper Bound)')
-    # ax.plot(solution.t, solution.y[2]*recovery_confidence_value/100, label = 'R (Lower bound)')
-    # ax.plot(solution.t, solution.y[2]*(abs((1-recovery_confidence_value/100))+1), label = 'R (Upper bound)')
+    
+    ax.plot(solution.t, solution.y[0], label = 'S', linewidth=3, color='#005d8f')
+    ax.plot(solution.t, solution.y[1], label = 'I', linewidth=3, color='#8f71eb')
+    ax.plot(solution.t, solution.y[2], label = 'R', linewidth=3, color='#de4e4e')
+    
+   
+    rand_beta = np.random.triangular(beta_0*rate_confidence_value/100*.9999999999999, beta_0, beta_0*((1-(rate_confidence_value/100))+1)*1.0000000000001, 10)
+    rand_gamma = np.random.triangular(gamma*recovery_confidence_value/100*.9999999999999, gamma, gamma*((1-(recovery_confidence_value/100))+1)*1.000000000001, 10)
+    rand_epsilon = np.random.triangular(epsilon*immunity_confidence_value/100*.9999999999999, epsilon, epsilon*((1-(immunity_confidence_value/100))+1)*1.0000000000001, 10)
+    
+    for a, b, c in zip(rand_beta, rand_gamma, rand_epsilon):
+        rand_solution = solve_ivp(sir_derivs, time_range, initial_conditions, t_eval=fine_time, args = (a, omega, b, c, N))
+        ax.plot(solution.t, rand_solution.y[0], color='#80aec7', linewidth=3)
+        ax.plot(solution.t, rand_solution.y[1], color='#bcaaf3', linewidth=3)
+        ax.plot(solution.t, rand_solution.y[2], color='#eb9595', linewidth=3)
+        
+
+    ax.plot(solution.t, solution.y[0], label = 'S', linewidth=3, color='#005d8f')
+    ax.plot(solution.t, solution.y[1], label = 'I', linewidth=3, color='#8f71eb')
+    ax.plot(solution.t, solution.y[2], label = 'R', linewidth=3, color='#de4e4e')
+   
     ax.grid(True)
     ax.legend(["Susceptible", "Infected", "Recovered"])
 
@@ -527,16 +559,51 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
         )
     
     
+     
+    df = pd.DataFrame({
+     'S':[solution.t, solution.y[0]],
+     'I':[solution.t, solution.y[1]],
+     'R':[solution.t, solution.y[2]]})
     
     return plotly_fig
 
+
+# @app.callback(
+#     Output('download_csv', 'href'),
+#     [Input('some_input', 'value')]
+# )
+
+# def some_callback(input_value):
+#     """Some callback that updates the href for the button"""
+    
+#     return f"/download_csv?value={input_value}"
+
+# @app.route('/download_csv')
+# def dash_download_csv():
+#         """Regular Flask route.
+#         Download a CSV file from an existing Pandas DataFrame"""
+
+#         # Here's the argument passed to the URL in the Dash callback
+#         value = request.args.get('value')
+#         df = get_df(value)
+    
+#         # Convert DataFrame to CSV
+#         csv = df.to_csv(index=False)
+
+#         return Response(
+#             csv,
+#             mimetype="text/csv",
+#             headers={
+#             "Content-disposition": "attachment; filename=rcom_data.csv"
+#         }
+#     )
 
 
 
 
 
 if __name__ == '__main__':
-   app.run_server(debug = True)
+    app.run_server(debug = True)
     
     
     
