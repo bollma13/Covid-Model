@@ -12,7 +12,7 @@ Created on Thu Sep 30 21:06:51 2021
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-# plt.style.use("bmh")
+plt.style.use("bmh")
 from scipy.integrate import solve_ivp
 import dash 
 import dash_html_components as html
@@ -35,7 +35,8 @@ def sir_derivs(time, y, beta_0, omega, gamma, epsilon, N):
     i = y[1]
     r = y[2]
    
-    beta = beta_0*(np.sin(omega*time) + 1)
+    beta = beta_0
+    # *(np.sin(omega*time) + 1)
    
     dsdt = -beta*s*i/N + epsilon*r
     didt = beta*s*i/N - gamma*i
@@ -74,38 +75,17 @@ plotly_fig = mpl_to_plotly(fig)
 
 
 app.layout = html.Div([
-        html.Div(children=[
-            
-    html.H1(
-    # children='COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 30}
-    ),
-    html.Div(children = 'COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 40, 'padding': "1px"}),
-    
-    dcc.Graph(id= 'SIR-graph', figure=plotly_fig),
-    
-    html.Div(style={'padding': 15, 'flex': 1},children=[
-    html.A(
-    "Download CSV",
-    id="download_csv",
-    href="#",
-    className="btn btn-outline-secondary btn-sm",
+        html.Div(children = 'COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 40, 'padding': "1px"}),
+        dcc.Tabs([
 
-    style={'textAlign': 'center', 'color': '#ffffff', 'padding': '6px', 'fontSize': 15, 'borderColor':"#ffffff"},
-    
-    )
-    
-    ])
-    
-    ]),
-
-    
-    
-    html.Div(style={'display': 'flex', 'flex-direction': 'row'}, children=[
-        html.Div(style={'padding': 15, 'flex': 1},children=[
+    dcc.Tab(label='Controls', 
+        children=[
+    html.Div(style={'textAlign': 'center','display': 'flex', 'flex-direction': 'row'}, children=[
+        html.Div(style={'textAlign': 'center','padding': 15, 'flex': 1},children=[
             
     # Population input, slider
-    "Population: ",
-    dcc.Input(debounce=True, id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population"),
+    html.Div(children = 'Population', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='pop_slider',
         min=1000,
@@ -113,14 +93,14 @@ app.layout = html.Div([
         step=1000,
         value=100000,
         marks={
-            1000: {'label': '1000', 'style': {'color': '#77b0b1'}},
-            10000000: {'label': '10000000', 'style': {'color': '#f50'}}
+            1000: {'label': '1000', 'style': {'color': '#999999', 'fontSize': 15}},
+            10000000: {'label': '10000000', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),
     
     # Range(days) input, slider
-    "Days: ",
-    dcc.Input(debounce=True, id="range_input", type="number", min=10, max=1000, value=200, placeholder="Days", style={'marginRight':'10px'}),
+    html.Div(children = 'Days', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="range_input", type="number", min=10, max=1000, value=200, placeholder="Days", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='range_slider',
         min=10,
@@ -128,14 +108,14 @@ app.layout = html.Div([
         step=1,
         value=200,
         marks={
-            10: {'label': '10', 'style': {'color': '#77b0b1'}},
-            1000: {'label': '1000', 'style': {'color': '#f50'}}
+            10: {'label': '10', 'style': {'color': '#999999', 'fontSize': 15}},
+            1000: {'label': '1000', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),
 
     # Infection Rate input, slider
-    "Infection rate: ",    
-    dcc.Input(debounce=True, id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'marginRight':'10px'}),
+    html.Div(children = 'Infection Rate', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='rate_slider',
         min=.0001,
@@ -143,21 +123,21 @@ app.layout = html.Div([
         step=.01,
         value=5e-1,
         marks={
-            .0001: {'label': '0.0001', 'style': {'color': '#77b0b1'}},
-            1: {'label': '1.0', 'style': {'color': '#f50'}}
+            .0001: {'label': '0.0001', 'style': {'color': '#999999', 'fontSize': 15}},
+            1: {'label': '1.0', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),          # Infection Rate Confidence slider
-    html.Div(id='slider-output-container22'),
+    html.Div(id='slider-output-container22', style={'fontSize': 20}),
     dcc.Slider(
         id='rate-confidence-slider',
-        min=80,
-        max=100,
+        min=0,
+        max=20,
         step=1,
-        value=100,
+        value=0,
         tooltip={"placement": "top"},
         marks={
-            80: {'label': '80', 'style': {'color': '#77b0b1'}},
-            100: {'label': '100', 'style': {'color': '#f50'}}
+            80: {'label': '80', 'style': {'color': '#999999', 'fontSize': 15}},
+            100: {'label': '100', 'style': {'color': '#999999', 'fontSize': 15}}
             },
         # tooltip={"placement": "top", "always_visible": True}
     )]
@@ -167,68 +147,64 @@ app.layout = html.Div([
     html.Div(style={'padding': 10, 'flex': 1}, children=[
 
     # Recovery input, slider
-    "Recovery rate: ", 
-    dcc.Input(debounce=True, id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'marginRight':'10px'}),
+    html.Div(children = 'Recovery Rate', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='recovery_slider',
-        min=.01,
+        min=0.01,
         max=1,
         step=.01,
         value=.1,
         marks={
-            .01: {'label': '0.01', 'style': {'color': '#77b0b1'}},
-            1: {'label': '1.0', 'style': {'color': '#f50'}}
+            .01: {'label': '0.01', 'style': {'color': '#999999', 'fontSize': 15}},
+            1: {'label': '1.0', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),          #  Recovery confidence slider
-    html.Div(id='slider-output-container33'),
+    html.Div(id='slider-output-container33', style={'fontSize': 20}),
     dcc.Slider(
         id='recovery-confidence-slider',
-        min=80,
-        max=100,
+        min=0,
+        max=20,
         step=1,
-        value=100,
+        value=0,
         tooltip={"placement": "top"},
         marks={
-            80: {'label': '80', 'style': {'color': '#77b0b1'}},
-            100: {'label': '100', 'style': {'color': '#f50'}}
-            }, 
+            80: {'label': '80', 'style': {'color': '#999999', 'fontSize': 15}},
+            100: {'label': '100', 'style': {'color': '#999999', 'fontSize': 15}}
+            },
     ),
     
     # Imunity input, slider
-    "Post infection immunity: ",
-    dcc.Input(debounce=True, id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'marginRight':'10px'}),
+    html.Div(children = 'Post Infection Immunity', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='immunity_slider',
-        min=.01,
+        min=0.01,
         max=1,
         step=.01,
         value=.1,
         marks={
-            .01: {'label': '0.01', 'style': {'color': '#77b0b1'}},
-            1: {'label': '1.0', 'style': {'color': '#f50'}}
+            .01: {'label': '0.01', 'style': {'color': '#999999', 'fontSize': 15}},
+            1: {'label': '1.0', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),      # Imunity confidence slider
-    html.Div(id='slider-output-container44'),
+    html.Div(id='slider-output-container44', style={'fontSize': 20}),
     dcc.Slider(
         id='immunity-confidence-slider',
-        min=80,
-        max=100,
+        min=0,
+        max=20,
         step=1,
-        value=100,
+        value=0,
         tooltip={"placement": "top"},
         marks={
-            80: {'label': '80', 'style': {'color': '#77b0b1'}},
-            100: {'label': '100', 'style': {'color': '#f50'}}
+            80: {'label': '80', 'style': {'color': '#999999', 'fontSize': 15}},
+            100: {'label': '100', 'style': {'color': '#999999', 'fontSize': 15}}
             },
-    )]
     ),
     
-    
-    html.Div(style={'padding': 10, 'flex': 1},children=[
-     
     # Vaccinated input, slider 
-    "Percent vaccinated: ",
-    dcc.Input(debounce=True, id="vaccinated_input", type="number", min=0, max=100, value=0, size="50", placeholder="% vaccinated"),
+    html.Div(children = 'Percent Vaccinated', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="vaccinated_input", type="number", min=0, max=100, value=0, size="50", placeholder="% vaccinated", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='vaccinated_slider',
         min=0,
@@ -236,14 +212,14 @@ app.layout = html.Div([
         step=.1,
         value=0,
         marks={
-            0: {'label': '0', 'style': {'color': '#77b0b1'}},
-            100: {'label': '100', 'style': {'color': '#f50'}}
+            0: {'label': '0', 'style': {'color': '#999999'}},
+            100: {'label': '100', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),
     
     # Mask input, slider 
-    "Percent wearing masks in public: ",
-    dcc.Input(debounce=True, id="mask_input", type="number", min=0, max=100,  value=0, placeholder="% wearing masks", style={'marginRight':'10px'}),
+    html.Div(children = 'Percent wearing masks in public', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    dcc.Input(debounce=True, id="mask_input", type="number", min=0, max=100,  value=0, placeholder="% wearing masks", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='mask_slider',
         min=0,
@@ -251,17 +227,68 @@ app.layout = html.Div([
         step=.1,
         value=0,
         marks={
-            0: {'label': '0', 'style': {'color': '#77b0b1'}},
-            100: {'label': '100', 'style': {'color': '#f50'}}
+            0: {'label': '0', 'style': {'color': '#999999', 'fontSize': 15}},
+            100: {'label': '100', 'style': {'color': '#999999', 'fontSize': 15}}
             },
         
-    )]
-        
+    )
+    
+    ]),
+    
+    html.Div(style={'padding': 10, 'flex': 1},children=[
+    html.Div(children = 'Instructions', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    html.Label('Enter prefered values for the Population, Number of Days, Infection Rate, Recovery Rate, Post Infection Immunity, Vaccinated Percentage, and Masked Percentage. Add Uncertanty to show a range of possible results. Click \'Model\' Tab to see result.', 
+               style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+    html.Div(children = 'Created By', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+    html.Label('Sam Bollman, Michigan State University', 
+               style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+
+    
+    ]),
+    
+    ])
+    
+    ]),
+    
+    dcc.Tab(label='Model', children=[
+        html.Div(children=[
+            
+    html.H1(
+    # children='COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 30}
     ),
+    # html.Div(children = 'COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 40, 'padding': "1px"}),
+    
+    dcc.Graph(id= 'SIR-graph', figure=plotly_fig),
+    
+    html.Div(style={'padding': 15, 'display': 'flex', 'flex-direction': 'row'},children=[
+        html.Div(style={'padding': 10, 'flex': 1},children=[
+            html.A(
+            "Download CSV",
+            id="download_csv",
+            href="#",
+            className="btn btn-outline-secondary btn-sm",
+            style={'textAlign': 'center', 'color': '#ffffff', 'padding': '6px', 'fontSize': 15, 'borderColor':"#ffffff"},
+            )
+        
+        ]),
+        html.Div(style={'padding': 10, 'flex': 1},children=[
+        html.Label(children = 'R0 (beta/gamma)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
+        html.Div("r0", id="slider-output-container_r0", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"})
     
     ])
     
     ])
+    
+    ])
+        
+    ])
+    
+    ],
+    style={'fontSize': 22, 'padding': '2px', 'width': '600px', 'margin': 'auto'},
+    colors={"border": "white","primary": "#white","background": "#1a232d"},
+    )
+    ],
+    style={'textAlign': 'center'})
 
 # Update graph initially: Add log/lin buttons, size, color, legend, axis
 plotly_fig.update_layout(
@@ -273,7 +300,9 @@ plotly_fig.update_layout(
                     dict(
                         label="Log", 
                         method="relayout", 
-                        args=[{"yaxis.type": "log"}])])],
+                        args=[{"yaxis.type": "log"}])],
+                    showactive=False,)],
+                    
                     
                     width=1350, height=500, paper_bgcolor='#222222',
                     plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
@@ -363,7 +392,7 @@ def update_rate_output(s_value, i_value):
     Output('slider-output-container22', 'children'),
     Input('rate-confidence-slider', 'value'))
 def update_confidence_output1(value):
-    return 'Confidence: {}'.format(value), '%'
+    return 'Uncertanty: {}'.format(value), '%'
 
 # Recovery rate input, slider sync
 @app.callback(
@@ -393,7 +422,7 @@ def update_recovery_output(s_value, i_value):
     Output('slider-output-container33', 'children'),
     Input('recovery-confidence-slider', 'value'))
 def update_confidence_output2(value):
-    return 'Confidence: {}'.format(value), '%'
+    return 'Uncertanty: {}'.format(value), '%'
 
 # immunity  input, slider sync
 @app.callback(
@@ -423,7 +452,7 @@ def update_immunity_output(s_value, i_value):
     Output('slider-output-container44', 'children'),
     Input('immunity-confidence-slider', 'value'))
 def update_confidence_output3(value):
-    return 'Confidence: {}'.format(value), '%'
+    return 'Uncertanty: {}'.format(value), '%'
 
 # Vaccinated  input, slider sync
 @app.callback(
@@ -474,7 +503,14 @@ def update_mask_output(s_value, i_value):
     else:
         return s_value, s_value
 
-
+@app.callback(  # print r0 (betta/gamma)
+    Output('slider-output-container_r0', 'children'),
+    Input('rate_slider', 'value'),
+    Input('recovery_slider', 'value')
+    )
+    
+def print_r0(value1, value2):
+    return '{}'.format(value1/value2)
 
 
 # Update Graph callback, interaction
@@ -518,10 +554,21 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     ax.plot(solution.t, solution.y[1], label = 'I', linewidth=3, color='#8f71eb')
     ax.plot(solution.t, solution.y[2], label = 'R', linewidth=3, color='#de4e4e')
     
-   
-    rand_beta = np.random.triangular(beta_0*rate_confidence_value/100*.9999999999999, beta_0, beta_0*((1-(rate_confidence_value/100))+1)*1.0000000000001, 10)
-    rand_gamma = np.random.triangular(gamma*recovery_confidence_value/100*.9999999999999, gamma, gamma*((1-(recovery_confidence_value/100))+1)*1.000000000001, 10)
-    rand_epsilon = np.random.triangular(epsilon*immunity_confidence_value/100*.9999999999999, epsilon, epsilon*((1-(immunity_confidence_value/100))+1)*1.0000000000001, 10)
+    
+    beta_d = np.sqrt(6)*rate_confidence_value/100*beta_0
+    rand_beta = np.random.triangular((beta_0 - beta_d)*.9999999999999, beta_0, (beta_0 + beta_d),size=10)
+  
+    gamma_d = np.sqrt(6)*recovery_confidence_value/100*gamma
+    rand_gamma = np.random.triangular((gamma - gamma_d)*.9999999999999, gamma, (gamma + gamma_d), size=10)
+
+    epsilon_d = np.sqrt(6)*immunity_confidence_value/100*epsilon
+    rand_epsilon = np.random.triangular((epsilon - epsilon_d)*.9999999999999, epsilon, (epsilon + epsilon_d)*1.0000000000001, size=10)
+
+    
+    
+    # rand_beta = np.random.triangular(beta_0*rate_confidence_value/100*.9999999999999, beta_0, beta_0*((1-(rate_confidence_value/100))+1)*1.0000000000001, 10)
+    # rand_gamma = np.random.triangular(gamma*recovery_confidence_value/100*.9999999999999, gamma, gamma*((1-(recovery_confidence_value/100))+1)*1.000000000001, 10)
+    # rand_epsilon = np.random.triangular(epsilon*immunity_confidence_value/100*.9999999999999, epsilon, epsilon*((1-(immunity_confidence_value/100))+1)*1.0000000000001, 10)
     
     for a, b, c in zip(rand_beta, rand_gamma, rand_epsilon):
         rand_solution = solve_ivp(sir_derivs, time_range, initial_conditions, t_eval=fine_time, args = (a, omega, b, c, N))
@@ -549,7 +596,9 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                     dict(
                         label="Log", 
                         method="relayout", 
-                        args=[{"yaxis.type": "log"}])])],
+                        args=[{"yaxis.type": "log"}])],
+                        showactive=False,
+                        )],
                     
                     width=1350, height=500, paper_bgcolor='#222222',
                     plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
