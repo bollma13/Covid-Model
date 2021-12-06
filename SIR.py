@@ -126,7 +126,7 @@ app.layout = html.Div([
             1000: {'label': '1000', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),
-
+ 
 
     # Vaccinated input, slider 
     html.Div(children = 'Percent vaccinated', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
@@ -167,7 +167,7 @@ app.layout = html.Div([
     html.Div(style={'padding': 15, 'flex': 1}, children=[
 
  # Infection Rate input, slider
-    html.Div(children = 'Infection Rate (β)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'Infection Rate', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='rate_slider',
@@ -196,7 +196,7 @@ app.layout = html.Div([
         
     
     # Recovery input, slider
-    html.Div(children = 'Recovery Rate (γ)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'Recovery Rate', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='recovery_slider',
@@ -224,8 +224,8 @@ app.layout = html.Div([
     ),
     
     
-    # Imunity input, slider
-    html.Div(children = 'Post Infection Immunity (ε)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    # Immunity input, slider
+    html.Div(children = 'Post Infection Immunity', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='immunity_slider',
@@ -237,13 +237,13 @@ app.layout = html.Div([
             .01: {'label': '0.01', 'style': {'color': '#999999', 'fontSize': 15}},
             1: {'label': '1.0', 'style': {'color': '#999999', 'fontSize': 15}}
             },
-    ),      # Imunity confidence slider
+    ),      # Immunity confidence slider
     html.Div(id='slider-output-container44', style={'fontSize': 20}),
     dcc.Slider(
         id='immunity-confidence-slider',
         min=0,
         max=1,
-        step=.01,
+        step=.001,
         value=0,
         tooltip={"placement": "bottom"},
         marks={
@@ -544,7 +544,7 @@ def print_r0(value1, value2):
 @app.callback(  # print r0 (betta/gamma)
     Output('r0_output2', 'children'),
     Input('rate_slider', 'value'),
-    Input('recovery_slider', 'value')
+    Input('recovery_slider', 'value'),
     )
     
 def print_r02(value1, value2):
@@ -573,7 +573,7 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                  immunity_value, vaccinated_value, mask_value, rate_confidence_value,
                  recovery_confidence_value, immunity_confidence_value):
     
-    mask_value = abs(((mask_value/100)*.8)-1)
+    mask_value = abs(((mask_value/100)*.75)-1)
     vaccinated_value = abs(((vaccinated_value/100)*.9)-1)
     
     time_range = [0, range_value]
@@ -592,16 +592,16 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     ax.plot(solution.t, solution.y[0], label = 'S', linewidth=3, color='#005d8f')
     ax.plot(solution.t, solution.y[1], label = 'I', linewidth=3, color='#8f71eb')
     ax.plot(solution.t, solution.y[2], label = 'R', linewidth=3, color='#de4e4e')
-    
-    
+        
     beta_d = np.sqrt(6)*rate_confidence_value
     rand_beta = np.random.triangular((beta_0 - beta_d)*.9999999999999, beta_0, (beta_0 + beta_d),size=10)
-  
+
     gamma_d = np.sqrt(6)*recovery_confidence_value
     rand_gamma = np.random.triangular((gamma - gamma_d)*.9999999999999, gamma, (gamma + gamma_d), size=10)
 
     epsilon_d = np.sqrt(6)*immunity_confidence_value
     rand_epsilon = np.random.triangular((epsilon - epsilon_d)*.9999999999999, epsilon, (epsilon + epsilon_d), size=10)
+    print(rand_epsilon + epsilon)  
 
     
     
@@ -662,19 +662,24 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 @app.callback(  # Update max for the infection rate standard deviation
     Output('rate-confidence-slider', 'max'),
     Output('rate-confidence-slider', 'marks'),
-    Input('rate_slider', 'value')
+    Output('rate-confidence-slider', 'value'),
+    Input('rate_slider', 'value'),
+    Input('vaccinated_slider', 'value'),
+    Input('mask_slider', 'value'),
+
     )
     
-def update_rate_confidence_slider(value):
-    value = value/np.sqrt(6)
+def update_rate_confidence_slider(value1, value2, value3):
+    value = (value1 * (abs(((value3/100)*.75)-1)) * (abs(((value2/100)*.9)-1)))/np.sqrt(6)
     marks = {0: {'label': '0', 'style': {'color': '#999999', 'fontSize': 15}},
             value: {'label': str(round(value,4)), 'style': {'color': '#999999', 'fontSize': 15}}
             }
-    return value, marks
+    return value, marks, 0
 
 @app.callback(  # Update max for the recovery rate standard deviation
     Output('recovery-confidence-slider', 'max'),
     Output('recovery-confidence-slider', 'marks'),
+    Output('recovery-confidence-slider', 'value'),
     Input('recovery_slider', 'value')
     )
     
@@ -683,22 +688,26 @@ def update_recovery_confidence_slider(value):
     marks = {0: {'label': '0', 'style': {'color': '#999999', 'fontSize': 15}},
             value: {'label': str(round(value,4)), 'style': {'color': '#999999', 'fontSize': 15}}
             }
-    return value, marks
+    return value, marks, 0
 
 @app.callback(  # Update max for the post infection immunity standard deviation
     Output('immunity-confidence-slider', 'max'),
     Output('immunity-confidence-slider', 'marks'),
-    Input('immunity_slider', 'value')
+    Output('immunity-confidence-slider', 'value'),
+    Input('immunity_slider', 'value'),
+    Input('recovery_slider', 'value'),
+
     )
-    
-def update_immunity_confidence_slider(value):
-    value = value/np.sqrt(6)
+     
+def update_immunity_confidence_slider(value1, value2):
+    value = (value1 * value2) /np.sqrt(6)
     marks = {0: {'label': '0', 'style': {'color': '#999999', 'fontSize': 15}},
             value: {'label': str(round(value,4)), 'style': {'color': '#999999', 'fontSize': 15}}
             }
-    return value, marks
-
-
+    print(value) 
+    return value, marks, 0
+  
+ 
 # @app.callback(
 #     Output('download_csv', 'href'),
 #     [Input('some_input', 'value')]
