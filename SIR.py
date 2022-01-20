@@ -62,7 +62,7 @@ plt.plot(solution.t, solution.y[2], label = 'R')
 plt.xlabel("time")
 
 
-fig = plt.figure()
+fig = plt.Figure()
 ax = fig.add_subplot(111)
 ax.plot(solution.t, solution.y[0], label = 'S')
 ax.plot(solution.t, solution.y[1], label = 'I')
@@ -86,19 +86,30 @@ app.layout = html.Div([
         html.Div(style={'padding': 10, 'flex': 1},children=[
         html.Div(children = 'Welcome!', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
         html.Label('This web app was developed to model COVID-19 using an SIR model. Read the instructions to get started or find more information on the \'More Info\' tab.', 
-                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
         html.Div(children = 'Instructions', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-        html.Label('Enter prefered values for the Population, Number of Days, Infection Rate, Recovery Rate, Post Infection Immunity, Vaccinated Percentage, and Masked Percentage. Add Uncertanty to show a range of possible results. Click \'Results\' Tab to see result.', 
-                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
-        html.Div(children = 'Created By', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-        html.Label('Sam Bollman, Michigan State University', 
-                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+        html.Label('Use the text boxes and sliders to edit values on the right. Click the \'Plots\' tab at the top to see the result. You can find more information on the \'More Info\' tab.', 
+                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
+        html.Div(children = 'r0', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+        html.Label('r0 or r-naught represents the average amount of people that a single person will infect with a disease. In this model r0 is shown by dividing the infection rate by the recovery rate.',
+                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
+        html.Div(children =  'r0 values for common diseases(NPR):' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px", 'marginTop' : '5px'}),
+        html.Div(children =  'influenza: 1-2' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'ebola: 2' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'HIV: 4' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'SARS: 4' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'mumps: 10' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'measles: 18' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'r0 values for COVID-19(BBC): ' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px", 'marginTop' : '10px'}),
+        html.Div(children =  'original virus: 2.4-2.6' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'delta varient: 5-8' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+        html.Div(children =  'omnicron varient: unknown (likely >8)' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
     ]),
          
     html.Div(style={'textAlign': 'center','padding': 15, 'flex': 1},children=[
             
     # Population input, slider
-    html.Div(children = 'Population', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'population', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='pop_slider',
@@ -113,7 +124,7 @@ app.layout = html.Div([
     ),
     
     # Range(days) input, slider
-    html.Div(children = 'Days', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'days', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="range_input", type="number", min=10, max=1000, value=200, placeholder="Days", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='range_slider',
@@ -129,7 +140,7 @@ app.layout = html.Div([
  
 
     # Vaccinated input, slider 
-    html.Div(children = 'Percent vaccinated', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'percent vaccinated', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="vaccinated_input", type="number", min=0, max=100, value=0, size="50", placeholder="% vaccinated", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='vaccinated_slider',
@@ -144,7 +155,7 @@ app.layout = html.Div([
     ),
     
     # Mask input, slider 
-    html.Div(children = 'Percent wearing masks in public', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'percent wearing masks in public', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="mask_input", type="number", min=0, max=100,  value=0, placeholder="% wearing masks", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='mask_slider',
@@ -159,7 +170,7 @@ app.layout = html.Div([
     ),
     
     html.Div(style={'padding': 15, 'flex': 1},children=[
-        html.Label(children = 'R0 (β/γ)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
+        html.Label(children = 'r0 (β/γ)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
         html.Div("r0", id="r0_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"})
             ])
     ]),
@@ -167,7 +178,7 @@ app.layout = html.Div([
     html.Div(style={'padding': 15, 'flex': 1}, children=[
 
  # Infection Rate input, slider
-    html.Div(children = 'Infection Rate', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'infection rate (β)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="rate_input", type="number", min=.0001, max=1, value=5e-1, placeholder="Infection rate", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='rate_slider',
@@ -196,7 +207,7 @@ app.layout = html.Div([
         
     
     # Recovery input, slider
-    html.Div(children = 'Recovery Rate', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'recovery rate (γ)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="recovery_input", type="number", min=.01, max=1, value=.1, placeholder="Recovery rate", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='recovery_slider',
@@ -225,7 +236,7 @@ app.layout = html.Div([
     
     
     # Immunity input, slider
-    html.Div(children = 'Post Infection Immunity', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'post infection immunity', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="immunity_input", type="number", min=.01, max=1,  value=.1, placeholder="Immunity", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='immunity_slider',
@@ -258,7 +269,7 @@ app.layout = html.Div([
     
     ]),
     
-    dcc.Tab(label='Results', children=[
+    dcc.Tab(label='Plots', children=[
         html.Div(children=[
             
     html.H1(
@@ -266,23 +277,38 @@ app.layout = html.Div([
     ),
     # html.Div(children = 'COVID-19 Model', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 40, 'padding': "1px"}),
     html.Div(
-    dcc.Graph(id='SIR-graph', figure=plotly_fig, responsive=True, style={'display': 'inline-block', 'width': "80vw", 'height': '60vh'}),
     style={'display': 'inline-block'}),
     
     html.Div(style={'padding': 15, 'display': 'flex', 'flex-direction': 'row'},children=[
+        
         html.Div(style={'padding': 10, 'flex': 1},children=[
-            html.A(
-            "Download CSV",
-            id="download_csv",
-            href="#",
-            className="btn btn-outline-secondary btn-sm",
-            style={'textAlign': 'center', 'color': '#ffffff', 'padding': '6px', 'fontSize': 20, 'borderColor':"#ffffff"},
-            )
+            
+            dcc.Graph(id='SIR-graph', figure=plotly_fig, responsive=True, style={'display': 'inline-block', 'width': "80vw", 'height': '60vh'}),
+            # dcc.Graph(id='SIR-graph2', figure=plotly_fig2, responsive=True, style={'display': 'inline-block', 'width': "80vw", 'height': '60vh'}),
+
+            
             ]),
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
-        html.Label(children = 'R0 (β/γ)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
-        html.Div("r0", id="r0_output2", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"})
+        html.Label(children = 'Note: hover over graph to see Plotly graph controls on top right', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 17, 'padding': "0px"}),
+        html.Label(children = 'Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px", 'marginTop' : '30px'}),
+        html.Div("rate_out", id="rate_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("recovery_out", id="recovery_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("immunity_out", id="immunity_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("vax_out", id="vax_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("masks_out", id="masks_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("r0", id="r0_output2", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        
+        
+            
+            html.A(
+            "download CSV",
+            id="download_csv",
+            href="#",
+            className="btn btn-outline-secondary btn-sm",
+            style={'textAlign': 'center', 'color': '#ffffff', 'padding': '8px', 'fontSize': 20, 'borderColor':"#ffffff", 'marginTop' : '30px'},
+            )
+            
             ])
     
     ]),
@@ -292,21 +318,34 @@ app.layout = html.Div([
     ]),
     
     
+    
+    
     # More info Tab
     dcc.Tab(label='More Info', children=[
         html.Div(style={'textAlign': 'center','display': 'flex', 'flex-direction': 'row'}, children=[
         
             html.Div(style={'padding': 10, 'flex': 1}, children=[
                 
-                html.Div(children = 'Info', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-                html.Label('Information', 
-                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+
+                
+                
+
+                
+                html.Div(children = 'Controls', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+                html.Label('r0 is given by infection rate(β) over recovery rate(γ).', 
+                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                html.Div( style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
+                html.Label('Recovery rate is given by 1 over the mean recovery time in days.', 
+                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
                 ]),
                 
             html.Div(style={'padding': 10, 'flex': 1}, children=[
                 html.Div(children = 'Info', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
                 html.Label('Information', 
-                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"})
+                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+                html.Div(children = 'Created By', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+                html.Label('Sam Bollman, Michigan State University', 
+                            style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
                 ])
       
     ])  
@@ -324,11 +363,11 @@ app.layout = html.Div([
 plotly_fig.update_layout(
                     updatemenus=[dict(buttons=[
                     dict(
-                        label="Linear",  
+                        label="linear",  
                         method="relayout", 
                         args=[{"yaxis.type": "linear"}]),
                     dict(
-                        label="Log", 
+                        label="log", 
                         method="relayout", 
                         args=[{"yaxis.type": "log"}])],
                     showactive=False,)],
@@ -422,7 +461,7 @@ def update_rate_output(s_value, i_value):
     Output('slider-output-container22', 'children'),
     Input('rate-confidence-slider', 'value'))
 def update_confidence_output1(value):
-    return 'Standard Deviation: {}'.format(value), ''
+    return 'standard deviation: {}'.format(value), ''
 
 # Recovery rate input, slider sync
 @app.callback(
@@ -452,7 +491,7 @@ def update_recovery_output(s_value, i_value):
     Output('slider-output-container33', 'children'),
     Input('recovery-confidence-slider', 'value'))
 def update_confidence_output2(value):
-    return 'Standard Deviation: {}'.format(value), ''
+    return 'standard deviation: {}'.format(value), ''
 
 # immunity  input, slider sync
 @app.callback(
@@ -482,7 +521,7 @@ def update_immunity_output(s_value, i_value):
     Output('slider-output-container44', 'children'),
     Input('immunity-confidence-slider', 'value'))
 def update_confidence_output3(value):
-    return 'Standard Deviation: {}'.format(value), ''
+    return 'standard deviation: {}'.format(value), ''
 
 # Vaccinated  input, slider sync
 @app.callback(
@@ -533,23 +572,39 @@ def update_mask_output(s_value, i_value):
     else:
         return s_value, s_value
 
-@app.callback(  # print r0 (betta/gamma)
-    Output('r0_output', 'children'),
-    Input('rate_slider', 'value'),
-    Input('recovery_slider', 'value')
-    )
-def print_r0(value1, value2):
-    value = round(value1/value2, 2)
-    return '≈ ''{}'.format(value)
+# @app.callback(  # print r0 (betta/gamma)
+#     Output('r0_output', 'children'),
+#     Input('rate_slider', 'value'),
+#     Input('recovery_slider', 'value')
+#     )
+# def print_r0(pop_value, range_value, rate_value, recovery_value, 
+#                  immunity_value, vaccinated_value, mask_value, rate_confidence_value,
+#                  recovery_confidence_value, immunity_confidence_value):
+#     value = round(rate_value/recovery_value, 2)
+#     rate = rate_value
+#     return '≈ ''{}'.format(value)
+
 @app.callback(  # print r0 (betta/gamma)
     Output('r0_output2', 'children'),
+    Output('rate_output', 'children'),
+    Output('recovery_output', 'children'),
+    Output('immunity_output', 'children'),
+    Output('vax_output', 'children'),
+    Output('masks_output', 'children'),
     Input('rate_slider', 'value'),
     Input('recovery_slider', 'value'),
+    Input('immunity_slider', 'value'),
+    Input('vaccinated_slider', 'value'),
+    Input('mask_slider', 'value'),
     )
     
-def print_r02(value1, value2):
-    value = round(value1/value2, 2)
-    return '≈ ''{}'.format(value)
+def print_values(rate_value, recovery_value, immunity_value, vax_value, mask_value):
+    value = round(rate_value/recovery_value, 2)
+    
+    return 'r0 ≈ ''{}'.format(value), "infection rate: " "{}" .format(rate_value), "recovery rate: " "{}" .format(recovery_value), "immunity: " "{}" .format(immunity_value), "percent vaxinated : " "{}" .format(vax_value), "percent masked: " "{}" .format(mask_value)
+
+
+
 
 
 # Update Graph callback, interaction
@@ -566,7 +621,6 @@ def print_r02(value1, value2):
     Input('rate-confidence-slider', 'value'),
     Input('recovery-confidence-slider', 'value'),
     Input('immunity-confidence-slider', 'value'),
-    # Input('some_input', 'value')
     )
 
 def update_graph(pop_value, range_value, rate_value, recovery_value, 
@@ -605,10 +659,6 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
 
     
     
-    # rand_beta = np.random.triangular(beta_0*rate_confidence_value/100*.9999999999999, beta_0, beta_0*((1-(rate_confidence_value/100))+1)*1.0000000000001, 10)
-    # rand_gamma = np.random.triangular(gamma*recovery_confidence_value/100*.9999999999999, gamma, gamma*((1-(recovery_confidence_value/100))+1)*1.000000000001, 10)
-    # rand_epsilon = np.random.triangular(epsilon*immunity_confidence_value/100*.9999999999999, epsilon, epsilon*((1-(immunity_confidence_value/100))+1)*1.0000000000001, 10)
-    
     for a, b, c in zip(rand_beta, rand_gamma, rand_epsilon):
         rand_solution = solve_ivp(sir_derivs, time_range, initial_conditions, t_eval=fine_time, args = (a, omega, b, c, N))
         ax.plot(solution.t, rand_solution.y[0], color='#80aec7', linewidth=3)
@@ -628,11 +678,11 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
     plotly_fig.update_layout(
                     updatemenus=[dict(buttons=[
                     dict(
-                        label="Linear",  
+                        label="linear",  
                         method="relayout", 
                         args=[{"yaxis.type": "linear"}]),
                     dict(
-                        label="Log", 
+                        label="log", 
                         method="relayout", 
                         args=[{"yaxis.type": "log"}])],
                         showactive=False,
@@ -644,16 +694,12 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                     
                     autosize=True,
                     paper_bgcolor='#222222',
-                    plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
-                    yaxis_title="Population", 
+                    plot_bgcolor ='#e3e3e3', xaxis_title="days", 
+                    yaxis_title="population", 
                     font=dict(
                         size=22, color="#ffffff")  
         )
     
-    # df = pd.DataFrame({
-    #  'S':[solution.t, solution.y[0]],
-    #  'I':[solution.t, solution.y[1]],
-    #  'R':[solution.t, solution.y[2]]})
     
     return plotly_fig
 
@@ -708,35 +754,6 @@ def update_immunity_confidence_slider(value1, value2):
     return value, marks, 0
   
  
-# @app.callback(
-#     Output('download_csv', 'href'),
-#     [Input('some_input', 'value')]
-# )
-
-# def some_callback(input_value):
-#     """Some callback that updates the href for the button"""
-    
-#     return f"/download_csv?value={input_value}"
-
-# @app.route('/download_csv')
-# def dash_download_csv():
-#         """Regular Flask route.
-#         Download a CSV file from an existing Pandas DataFrame"""
-
-#         # Here's the argument passed to the URL in the Dash callback
-#         value = request.args.get('value')
-#         df = get_df(value)
-    
-#         # Convert DataFrame to CSV
-#         csv = df.to_csv(index=False)
-
-#         return Response(
-#             csv,
-#             mimetype="text/csv",
-#             headers={
-#             "Content-disposition": "attachment; filename=rcom_data.csv"
-#         }
-#     )
 
 
 
