@@ -10,19 +10,20 @@ Created on Thu Sep 30 21:06:51 2021
 """
 
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import matplotlib.pyplot as plt
 plt.style.use("bmh")
 from scipy.integrate import solve_ivp
 import dash 
 import dash_html_components as html
 import dash_core_components as dcc
-import plotly.graph_objects as go
+# import plotly.graph_objects as go
 from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 
-from flask import request, Response
+# from flask import request, Response
 
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
@@ -53,6 +54,7 @@ gamma = 0.1
 epsilon = 0.01
 N = 100000
 
+
 fine_time = np.linspace(time_range[0], time_range[1], 600)
 solution = solve_ivp(sir_derivs, time_range, initial_conditions, t_eval=fine_time, args = (beta_0, omega, gamma, epsilon, N))
 
@@ -64,14 +66,16 @@ plt.xlabel("time")
 
 fig = plt.Figure()
 ax = fig.add_subplot(111)
-ax.plot(solution.t, solution.y[0], label = 'S')
-ax.plot(solution.t, solution.y[1], label = 'I')
-ax.plot(solution.t, solution.y[2], label = 'R')
+ax.plot(solution.t, solution.y[0], label = 'S', linewidth=3, color='#005d8f')
+ax.plot(solution.t, solution.y[1], label = 'I', linewidth=3, color='#8f71eb')
+ax.plot(solution.t, solution.y[2], label = 'R', linewidth=3, color='#de4e4e')  
 plt.xlabel("time")
 ax.grid(True)
-ax.legend(["Susceptible", "Infected", "Recovered"])
+ax.legend(["Susceptible", "Infected", "Recovered"],  loc='best', prop={"size":15}, labelcolor='linecolor')
 
 plotly_fig = mpl_to_plotly(fig)
+
+
 
 
 app.layout = html.Div([
@@ -107,7 +111,15 @@ app.layout = html.Div([
     ]),
          
     html.Div(style={'textAlign': 'center','padding': 15, 'flex': 1},children=[
-            
+    html.Div(children = 'compare', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div([
+                daq.ToggleSwitch(label='', color='gray',
+                                 labelPosition='bottom',
+                    id='compare_toggle',
+                    value=False
+                    ),
+                html.Div(id='compare_toggle_output', style={'textAlign': 'center', 'color': '#bbbbbb'})
+                ]),        
     # Population input, slider
     html.Div(children = 'population', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
     dcc.Input(debounce=True, id="pop_input", type="number", min=1000, max=10000000,  value=100000, placeholder="Population", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
@@ -122,6 +134,7 @@ app.layout = html.Div([
             10000000: {'label': '10000000', 'style': {'color': '#999999', 'fontSize': 15}}
             },
     ),
+    
     
     # Range(days) input, slider
     html.Div(children = 'days', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
@@ -170,7 +183,7 @@ app.layout = html.Div([
     ),
     
     html.Div(style={'padding': 15, 'flex': 1},children=[
-        html.Label(children = 'r0 (β/γ)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
+        html.Label(children = '', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
         html.Div("r0", id="r0_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"})
             ])
     ]),
@@ -282,32 +295,42 @@ app.layout = html.Div([
     html.Div(style={'padding': 15, 'display': 'flex', 'flex-direction': 'row'},children=[
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
-            
+            # html.Label(children = 'Graph 1', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 30, 'padding': "0px", 'marginTop' : '0px'}),
             dcc.Graph(id='SIR-graph', figure=plotly_fig, responsive=True, style={'display': 'inline-block', 'width': "80vw", 'height': '60vh'}),
-            # dcc.Graph(id='SIR-graph2', figure=plotly_fig2, responsive=True, style={'display': 'inline-block', 'width': "80vw", 'height': '60vh'}),
-
+            
+            # html.Label(children = 'Graph 2', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 30, 'padding': "0px", 'marginTop' : '0px'}),
+            dcc.Graph(id='SIR-graph2', figure=plotly_fig, responsive=True, style={'display': 'inline-block', 'width': "80vw", 'height': '60vh'}),
+            
             
             ]),
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
         html.Label(children = 'Note: hover over graph to see Plotly graph controls on top right', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 17, 'padding': "0px"}),
-        html.Label(children = 'Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px", 'marginTop' : '30px'}),
-        html.Div("rate_out", id="rate_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
-        html.Div("recovery_out", id="recovery_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
-        html.Div("immunity_out", id="immunity_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
-        html.Div("vax_out", id="vax_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
-        html.Div("masks_out", id="masks_output", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
-        html.Div("r0", id="r0_output2", style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "2px"}),
+        html.Label(children = 'Graph 1 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px", 'marginTop' : '30px'}),
+        html.Div("rate_out", id="rate_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("recovery_out", id="recovery_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("immunity_out", id="immunity_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("vax_out", id="vax_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("masks_out", id="masks_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("r0", id="r0_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+
+        html.Label(children = 'Graph 2 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px", 'marginTop' : '270px'}),
+        html.Div("rate_out", id="rate_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("recovery_out", id="recovery_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("immunity_out", id="immunity_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("vax_out", id="vax_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("masks_out", id="masks_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
+        html.Div("r0", id="r0_output3", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 20, 'padding': "2px"}),
         
         
             
-            html.A(
-            "download CSV",
-            id="download_csv",
-            href="#",
-            className="btn btn-outline-secondary btn-sm",
-            style={'textAlign': 'center', 'color': '#ffffff', 'padding': '8px', 'fontSize': 20, 'borderColor':"#ffffff", 'marginTop' : '30px'},
-            )
+            # html.A(
+            # "download CSV",
+            # id="download_csv",
+            # href="#",
+            # className="btn btn-outline-secondary btn-sm",
+            # style={'textAlign': 'center', 'color': '#ffffff', 'padding': '8px', 'fontSize': 20, 'borderColor':"#ffffff", 'marginTop' : '30px'},
+            # )
             
             ])
     
@@ -370,15 +393,22 @@ plotly_fig.update_layout(
                         label="log", 
                         method="relayout", 
                         args=[{"yaxis.type": "log"}])],
-                    showactive=False,)],
+                        showactive=False,
+                        )],
+                    xaxis = dict(
+                        tickfont=dict(size=15)),
+                    yaxis = dict(
+                        tickfont=dict(size=15)),
                     
-                    
+                    autosize=True,
                     paper_bgcolor='#222222',
-                    plot_bgcolor ='#e3e3e3', xaxis_title="Days", 
-                    yaxis_title="Population", 
+                    plot_bgcolor ='#e3e3e3', xaxis_title="days", 
+                    yaxis_title="population", 
                     font=dict(
-                        size=16, color="#ffffff")      
+                        size=22, color="#ffffff")    
         )
+
+
 
 
 # Population input, slider sync
@@ -572,37 +602,50 @@ def update_mask_output(s_value, i_value):
     else:
         return s_value, s_value
 
-# @app.callback(  # print r0 (betta/gamma)
-#     Output('r0_output', 'children'),
-#     Input('rate_slider', 'value'),
-#     Input('recovery_slider', 'value')
-#     )
-# def print_r0(pop_value, range_value, rate_value, recovery_value, 
-#                  immunity_value, vaccinated_value, mask_value, rate_confidence_value,
-#                  recovery_confidence_value, immunity_confidence_value):
-#     value = round(rate_value/recovery_value, 2)
-#     rate = rate_value
-#     return '≈ ''{}'.format(value)
+@app.callback(
+    Output('compare_toggle_output', 'children'),
+    Input('compare_toggle', 'value')
+)
+def update_output(value):
+    if value == False:
+        value = "top graph"
+    else:
+        value = "bottom graph"
+    return 'you are editing the {}.'.format(value)
+
+
 
 @app.callback(  # print r0 (betta/gamma)
+    Output('r0_output', 'children'),
     Output('r0_output2', 'children'),
     Output('rate_output', 'children'),
     Output('recovery_output', 'children'),
     Output('immunity_output', 'children'),
     Output('vax_output', 'children'),
     Output('masks_output', 'children'),
+    
+    Output('r0_output3', 'children'),
+    Output('rate_output2', 'children'),
+    Output('recovery_output2', 'children'),
+    Output('immunity_output2', 'children'),
+    Output('vax_output2', 'children'),
+    Output('masks_output2', 'children'),
+    
     Input('rate_slider', 'value'),
     Input('recovery_slider', 'value'),
     Input('immunity_slider', 'value'),
     Input('vaccinated_slider', 'value'),
     Input('mask_slider', 'value'),
-    )
-    
-def print_values(rate_value, recovery_value, immunity_value, vax_value, mask_value):
-    value = round(rate_value/recovery_value, 2)
-    
-    return 'r0 ≈ ''{}'.format(value), "infection rate: " "{}" .format(rate_value), "recovery rate: " "{}" .format(recovery_value), "immunity: " "{}" .format(immunity_value), "percent vaxinated : " "{}" .format(vax_value), "percent masked: " "{}" .format(mask_value)
+    Input('compare_toggle', 'value')
 
+    )
+def print_values(rate_value, recovery_value, immunity_value, vax_value, mask_value, graph_toggle):
+    value = round(rate_value/recovery_value, 2)
+
+    if graph_toggle == False:
+        return 'r0 (β/γ) ≈ ''{}'.format(value), 'r0 ≈ ''{}'.format(value), "infection rate: " "{}" .format(rate_value), "recovery rate: " "{}" .format(recovery_value), "immunity: " "{}" .format(immunity_value), "percent vaxinated : " "{}" .format(vax_value), "percent masked: " "{}" .format(mask_value), dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    else:
+        return 'r0 (β/γ) ≈ ''{}'.format(value), dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 'r0 ≈ ''{}'.format(value), "infection rate: " "{}" .format(rate_value), "recovery rate: " "{}" .format(recovery_value), "immunity: " "{}" .format(immunity_value), "percent vaxinated : " "{}" .format(vax_value), "percent masked: " "{}" .format(mask_value)
 
 
 
@@ -610,7 +653,7 @@ def print_values(rate_value, recovery_value, immunity_value, vax_value, mask_val
 # Update Graph callback, interaction
 @app.callback(
     Output('SIR-graph', 'figure'),
-    # Output('download_csv', 'n_clicks'),
+    Output('SIR-graph2', 'figure'),
     Input('pop_slider', 'value'),
     Input('range_input', 'value'),
     Input('rate_slider', 'value'),
@@ -621,11 +664,13 @@ def print_values(rate_value, recovery_value, immunity_value, vax_value, mask_val
     Input('rate-confidence-slider', 'value'),
     Input('recovery-confidence-slider', 'value'),
     Input('immunity-confidence-slider', 'value'),
+    Input('compare_toggle', 'value') 
+
     )
 
 def update_graph(pop_value, range_value, rate_value, recovery_value, 
                  immunity_value, vaccinated_value, mask_value, rate_confidence_value,
-                 recovery_confidence_value, immunity_confidence_value):
+                 recovery_confidence_value, immunity_confidence_value, graph_toggle):
     
     mask_value = abs(((mask_value/100)*.75)-1)
     vaccinated_value = abs(((vaccinated_value/100)*.9)-1)
@@ -698,10 +743,17 @@ def update_graph(pop_value, range_value, rate_value, recovery_value,
                     yaxis_title="population", 
                     font=dict(
                         size=22, color="#ffffff")  
-        )
+        )    
     
     
-    return plotly_fig
+    if graph_toggle == False:
+        return plotly_fig, dash.no_update
+    else:
+        return  dash.no_update, plotly_fig
+    
+
+    
+     
 
 
 # Update max for standard deviation sliders
