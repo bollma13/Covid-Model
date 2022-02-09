@@ -13,3 +13,4 @@ dash_extensions
 dash_daq
 glob
 collections
+dash_table
