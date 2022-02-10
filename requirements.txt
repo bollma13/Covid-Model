@@ -11,5 +11,5 @@ plotly
 dash_bootstrap_components 
 dash_extensions
 dash_daq 
-collections 
+collections==3.3 
 glob
