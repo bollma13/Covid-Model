@@ -1056,7 +1056,7 @@ app.layout = html.Div([
                 
                 html.Div(style={'padding': 10, 'flex': 1}, children=[
                 html.Div(children = 'Model flow diagram', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-                html.Img(src=app.get_asset_url(os.getcwd()+'/Assets/chart.png'), style={'height':'350px', 'width':'660px'}),
+                html.Img(src=app.get_asset_url('chart.png'), style={'height':'350px', 'width':'660px'}),
                 html.Div(children = 'More information on r0', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px", 'marginTop' : '10px'}),
                 html.Label('r0 or r-naught represents the average amount of people that a single person will infect with a disease. In this model r0 is shown by dividing the infection rate by the recovery rate.',
                            style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
