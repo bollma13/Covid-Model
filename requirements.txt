@@ -11,6 +11,6 @@ plotly
 dash_bootstrap_components 
 dash_extensions
 dash_daq
-glob
+#glob
 collections
-dash_table
+#dash_table
