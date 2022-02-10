@@ -29,6 +29,10 @@ from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import dash_daq as daq
+import os
+
+
+print(os.getcwd())
 # import glob
 # from collections import OrderedDict
 
@@ -2433,6 +2437,7 @@ def update_graph(k1_value, k2_value,  r_value, gamma1_value, gamma0_value, alpha
 if __name__ == '__main__':
     app.run_server(debug = True)
     
+app.run_server(port=1813,debug=True, host='localhost')
     
     
     
