@@ -11,5 +11,5 @@ plotly
 dash_bootstrap_components 
 dash_extensions
 dash_daq 
-os
+os==3.10.2
 
