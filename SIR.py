@@ -191,7 +191,7 @@ plt.plot(tt,res.sol(tt)[12],label='D')
  
 # plt.ylim(0,2e5) 
 plt.xlim(0,244) 
-plt.grid() 
+plt.grid()  
 plt.legend()
 
 
