@@ -23,16 +23,14 @@ import matplotlib.pyplot as plt
 plt.style.use("bmh")
 from scipy.integrate import solve_ivp
 import dash 
-from dash import  dash_table
 import dash_html_components as html
 import dash_core_components as dcc
-# import plotly.graph_objects as go
 from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-import glob
-from collections import OrderedDict
+# import glob
+# from collections import OrderedDict
 
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
@@ -214,38 +212,6 @@ plotly_fig = mpl_to_plotly(fig)
 
 
 
-april_to_september = sorted(glob.glob('data/csse_covid_19_data/csse_covid_19_data/csse_covid_19_daily_reports_us/[0][1-9]*-2020.csv')) 
-april_to_september += sorted(glob.glob('data/csse_covid_19_data/csse_covid_19_data/csse_covid_19_daily_reports_us/10*-2020.csv')) 
- 
-ny_data_conf = np.zeros(len(april_to_september)) 
-ny_data_dead = np.zeros(len(april_to_september)) 
- 
-for i,file in enumerate(april_to_september): 
-    df = pd.read_csv(file) 
-    ny_data_conf[i] = (df[df.Province_State == 'New York'].Confirmed) 
-    ny_data_dead[i] = (df[df.Province_State == 'New York'].Deaths)
-    
-nyt_df = pd.read_csv('data.csv') 
-ny = nyt_df[nyt_df.state == 'New York']
- 
-
-fig,ax = plt.subplots(2,1,figsize=(8,10),sharex=True) 
- 
-ax[0].plot(range(42,42+len(ny_data_conf)-1),np.diff(ny_data_conf),'.',marker='x',c='green',label='Paper data') 
-ax[0].plot(tt[1:],np.diff(ny[ny.date.str.match(r'(2020-[0][0-9])|(2020-10)')].cases),'.',c='black',label='NYT data') 
-ax[0].plot(tt[1:],np.diff(res.sol(tt)[13]),label='My implementation') 
-ax[0].set_ylim(0,14000) 
-ax[0].set_ylabel('Daliy confimed cases',fontsize=14) 
-ax[0].legend(fontsize=12) 
- 
- 
-ax[1].plot(range(42,42+len(ny_data_dead)-1),np.diff(ny_data_dead),'.',marker='x',c='green') 
-ax[1].plot(tt[1:],np.diff(ny[ny.date.str.match(r'(2020-[0][0-9])|(2020-10)')].deaths),'.',c='black') 
-ax[1].plot(tt[1:],np.diff(res.sol(tt)[12])) 
-ax[1].set_ylim(0,3500) 
-ax[1].set_ylabel('Daliy deaths',fontsize=14) 
-ax[1].set_xlabel('Time',fontsize=14)
-  
 
 
 N0 = 19_542_209             # Initial population
@@ -265,18 +231,15 @@ R0 = 0                          # The initial value of recovered individuals
 D0 = 0                          # The initial value of dead individuals
 S0 = N0 - V0 - E0 - A0 - I10 - I20 - T10 - T20 - R0    # The initial value of susceptible individuals
 
-datatable = OrderedDict(
-                            [
-                    ("Variable", ["V0", "Nf0", "Sf0", "Vf0", "T10", "T20", "R0", "D0", "S0", "k1", "k2", "r", "gamma1", "gamma0", "alpha1", "alpha2", "gamma2", "xi", "E0", "A0", "A0","A0","beta","epsilon","rho","k3","m_ini","m0",
-                                  "t_ini","t_reopen","q_ini","qbar","theta2","p_ini","pbar","tp","p2","theta1","mu1","mu2","w","ev"]),
-                    ("Description", ["The initial value of vaccinated individuals", "The initial value of households susceptible ", "The initial value of household members that are susceptible", "The initial value of vacinated household members", "The initial value of diagnosed mild/moderate cases", "The initial value of diagnosed severe/critical individuals", "The initial value of recovered individuals", "The initial value of dead individuals", "The initial value of susceptible individuals",  "the mean incubation time in (days)", "the mean time from mild/moderate stage to severe/critical stage (days))", "the mean number of members in a family", "the average recovery period for diagnosed mild/moderate cases (days)", "the mean time for natural recovery (days)", "the average period from symptoms onset to diagnose for mild/moderate cases (days)",
+datatable = {"Variable": ["V0", "Nf0", "Sf0", "Vf0", "T10", "T20", "R0", "D0", "S0", "k1", "k2", "r", "gamma1", "gamma0", "alpha1", "alpha2", "gamma2", "xi", "E0", "A0", "A0","A0","beta","epsilon","rho","k3","m_ini","m0",
+                                  "t_ini","t_reopen","q_ini","qbar","theta2","p_ini","pbar","tp","p2","theta1","mu1","mu2","w","ev"]
+                    ,"Description": ["The initial value of vaccinated individuals", "The initial value of households susceptible ", "The initial value of household members that are susceptible", "The initial value of vacinated household members", "The initial value of diagnosed mild/moderate cases", "The initial value of diagnosed severe/critical individuals", "The initial value of recovered individuals", "The initial value of dead individuals", "The initial value of susceptible individuals",  "the mean incubation time in (days)", "the mean time from mild/moderate stage to severe/critical stage (days))", "the mean number of members in a family", "the average recovery period for diagnosed mild/moderate cases (days)", "the mean time for natural recovery (days)", "the average period from symptoms onset to diagnose for mild/moderate cases (days)",
                                      "the average diagnose period for severe/critical cases (days)","the average recovery period for diagnosed severe/critical cases","the mean recovery periodfor infected family members (days)","the initial value of latent individuals","the initial value of asymptomatic individuals","the initial value of undiagnosed mild/moderate cases",
                                      "the initial value of undiagnosed severe/critical individuals","the per-act transmission probability in contact withinfected individuals with symptoms","the reduction in per-act transmission probability ifinfection is in latent and asymptomatic stage","the probability that an individual is asymptomatic",
                                      "the progression rate from diagnosed mild/moderate stage to diagnosed severe/critical stage","base daily contact number in the public settings","change rate of daily contact number","the time when the contact number is half of maximal and minimal contact number in public settings (before reopening)","the time when the contact number is half of maximal and minimal contact number in public settings (after reopening)",
                                      "base percentage of handwashing before the epidemic","maximal percentage of handwashing during the epidemic","the effectiveness of handwashing in preventing infection","base percentage of face mask usage in the public settings before the Executive Order on face mask use","percentage of face mask usage in the public settings after the Executive Order on face mask use","the time when face mask usage in the public settings is half of the maximal face mask usage rate",
-                                     "the usage percentage of mask in the households","the effectiveness of mask in preventing infection","disease-induced death rate of undiagnosed severe/critical cases","disease-induced death rate of diagnosed severe/critical cases","vaccination rate","vaccine effectivness",]),
-                 
-                        ])
+                                     "the usage percentage of mask in the households","the effectiveness of mask in preventing infection","disease-induced death rate of undiagnosed severe/critical cases","disease-induced death rate of diagnosed severe/critical cases","vaccination rate","vaccine effectivness"]
+                 }
 
 data = pd.DataFrame(datatable)
  
@@ -1066,7 +1029,7 @@ app.layout = html.Div([
                 
                 
                             
-                dash_table.DataTable(
+                dash.dash_table.DataTable(
                     style_data={
                 'whiteSpace': 'normal',
                 'lineHeight': '15px'
