@@ -29,12 +29,8 @@ from plotly.tools import mpl_to_plotly
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import dash_daq as daq
-import os
 
 
-# print(os.getcwd())
-# import glob
-# from collections import OrderedDict
 
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
@@ -237,12 +233,12 @@ S0 = N0 - V0 - E0 - A0 - I10 - I20 - T10 - T20 - R0    # The initial value of su
 
 datatable = {"Variable": ["V0", "Nf0", "Sf0", "Vf0", "T10", "T20", "R0", "D0", "S0", "k1", "k2", "r", "gamma1", "gamma0", "alpha1", "alpha2", "gamma2", "xi", "E0", "A0", "A0","A0","beta","epsilon","rho","k3","m_ini","m0",
                                   "t_ini","t_reopen","q_ini","qbar","theta2","p_ini","pbar","tp","p2","theta1","mu1","mu2","w","ev"]
-                    ,"Description": ["The initial value of vaccinated individuals", "The initial value of households susceptible ", "The initial value of household members that are susceptible", "The initial value of vacinated household members", "The initial value of diagnosed mild/moderate cases", "The initial value of diagnosed severe/critical individuals", "The initial value of recovered individuals", "The initial value of dead individuals", "The initial value of susceptible individuals",  "the mean incubation time in (days)", "the mean time from mild/moderate stage to severe/critical stage (days))", "the mean number of members in a family", "the average recovery period for diagnosed mild/moderate cases (days)", "the mean time for natural recovery (days)", "the average period from symptoms onset to diagnose for mild/moderate cases (days)",
-                                     "the average diagnose period for severe/critical cases (days)","the average recovery period for diagnosed severe/critical cases","the mean recovery periodfor infected family members (days)","the initial value of latent individuals","the initial value of asymptomatic individuals","the initial value of undiagnosed mild/moderate cases",
-                                     "the initial value of undiagnosed severe/critical individuals","the per-act transmission probability in contact withinfected individuals with symptoms","the reduction in per-act transmission probability ifinfection is in latent and asymptomatic stage","the probability that an individual is asymptomatic",
-                                     "the progression rate from diagnosed mild/moderate stage to diagnosed severe/critical stage","base daily contact number in the public settings","change rate of daily contact number","the time when the contact number is half of maximal and minimal contact number in public settings (before reopening)","the time when the contact number is half of maximal and minimal contact number in public settings (after reopening)",
-                                     "base percentage of handwashing before the epidemic","maximal percentage of handwashing during the epidemic","the effectiveness of handwashing in preventing infection","base percentage of face mask usage in the public settings before the Executive Order on face mask use","percentage of face mask usage in the public settings after the Executive Order on face mask use","the time when face mask usage in the public settings is half of the maximal face mask usage rate",
-                                     "the usage percentage of mask in the households","the effectiveness of mask in preventing infection","disease-induced death rate of undiagnosed severe/critical cases","disease-induced death rate of diagnosed severe/critical cases","vaccination rate","vaccine effectivness"]
+                    ,"Description": ["initial value of vaccinated individuals", "initial value of households susceptible ", "initial value of household members that are susceptible", "initial value of vacinated household members", "initial value of diagnosed mild/moderate cases", "initial value of diagnosed severe/critical individuals", "initial value of recovered individuals", "initial value of dead individuals", "initial value of susceptible individuals",  "mean incubation time (days)", "mean time from mild/moderate stage to severe/critical stage (days)", "mean number of members in a family", "average recovery period for diagnosed mild/moderate cases (days)", "mean time for natural recovery (days)", "average period from symptoms onset to diagnose for mild/moderate cases (days)",
+                                     "average diagnose period for severe/critical cases (days)","average recovery period for diagnosed severe/critical cases (days)","the mean recovery periodfor infected family members (days)","the initial value of latent individuals","the initial value of asymptomatic individuals","the initial value of undiagnosed mild/moderate cases",
+                                     "initial value of undiagnosed severe/critical individuals","per-act transmission probability in contact withinfected individuals with symptoms","reduction in per-act transmission probability ifinfection is in latent and asymptomatic stage","probability that an individual is asymptomatic",
+                                     "progression rate from diagnosed mild/moderate stage to diagnosed severe/critical stage","base daily contact number in the public settings","change rate of daily contact number","time when the contact number is half of maximal and minimal contact number in public settings (before reopening)","time when the contact number is half of maximal and minimal contact number in public settings (after reopening)",
+                                     "base percentage of handwashing before the epidemic","maximal percentage of handwashing during the epidemic","effectiveness of handwashing in preventing infection","base percentage of face mask usage in the public settings before the Executive Order on face mask use","percentage of face mask usage in the public settings after the Executive Order on face mask use","time when face mask usage in the public settings is half of the maximal face mask usage rate",
+                                     "usage percentage of mask in the households","effectiveness of mask in preventing infection","disease-induced death rate of undiagnosed severe/critical cases","disease-induced death rate of diagnosed severe/critical cases","vaccination rate","vaccine effectivness"]
                  }
 
 data = pd.DataFrame(datatable)
@@ -259,11 +255,9 @@ app.layout = html.Div([
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
             
-        html.Div(children = 'Welcome!', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-        html.Label('This web app was developed to model COVID-19 using an SIR model. Read the instructions to get started or find more information on the \'More Info\' tab.', 
-                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
-        html.Div(children = 'Instructions', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-        html.Label('Use the text boxes and sliders to edit values on the right. Click the \'Plots\' tab at the top to see the result. You can find more information on the \'More Info\' tab.', 
+        
+        html.Div(children = 'Quick Start', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+        html.Label('Use the text boxes or sliders to edit values on the right. Click the \'Plots\' tab at the top to see the result. For more details click on the \'More Info\' tab.', 
                    style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
         html.Div(children = 'Compare', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
         html.Div(children = 'note: toggle updates other graph controls immediately', style={'textAlign': 'center', 'color': '#b6e0f8', 'marginBottom' : '10px'}),
@@ -286,7 +280,7 @@ app.layout = html.Div([
     html.Div(style={'textAlign': 'center','padding': 15, 'flex': 1},children=[
         
      # Range input, slider
-     html.Div(children = 'days', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+     html.Div(children = 'days', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="range_input", type="number", min=10, max=600,  value=244, placeholder="Range", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='range_slider',
@@ -300,10 +294,10 @@ app.layout = html.Div([
             },
     ),  
         
-    html.Button('Initial conditions', disabled='disabled',
+    html.Button('Initial Conditions', disabled='disabled',
                 style= {'background-color': '#616161',
                       'color': 'white',
-                      'fontSize': 16,
+                      'fontSize': 18,
                       'height': '1.8%',
                       'width': '90%',
                       'marginTop' : '10px'
@@ -311,7 +305,7 @@ app.layout = html.Div([
 
     
     #   V0 -   The initial value of vaccinated individuals      input, slider 
-    html.Div(children = 'initial value of vaccinated individuals (V0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of vaccinated individuals (V0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="V0_input", type="number", min= 0 , max= 1000000 ,  value= 0 , placeholder="0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='V0_slider',
@@ -325,7 +319,7 @@ app.layout = html.Div([
             },     
     ),
     #  Nf0 -  The initial value of households susceptible to COVID    input, slider 
-    html.Div(children = 'initial value of households susceptible to COVID (Nf0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of households susceptible to COVID (Nf0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="Nf0_input", type="number", min= 0 , max= 10000 ,  value= 4 , placeholder="0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='Nf0_slider',
@@ -339,7 +333,7 @@ app.layout = html.Div([
             },     
     ),
     #   Sf0 -   The initial value of  household members that are susceptible to COVID    input, slider 
-    html.Div(children = 'initial value of household members that are susceptible to COVID (Sf0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of household members that are susceptible to COVID (Sf0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="Sf0_input", type="number", min= 0 , max= 40000 ,  value= 3 , placeholder="Sf0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='Sf0_slider',
@@ -353,7 +347,7 @@ app.layout = html.Div([
             },     
     ),
     #   Vf0 -   The initial value of   vacinated household members   input, slider 
-    html.Div(children = 'initial value of vacinated household members (Vf0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of vacinated household members (Vf0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="Vf0_input", type="number", min= 0 , max= 1000000 ,  value= 0 , placeholder="Vf0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='Vf0_slider',
@@ -369,7 +363,7 @@ app.layout = html.Div([
     
           
     # E0 = 99.9998                # The initial value of latent individuals
-    html.Div(children = 'initial value of latent individuals (E0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of latent individuals (E0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="E0_input", type="number", min=95, max=105,  value=99.9998, placeholder="E0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='E0_slider',
@@ -383,7 +377,7 @@ app.layout = html.Div([
             },     
     ),
     #   A0 -   The initial value of asymptomatic individuals     input, slider 
-    html.Div(children = 'initial value of asymptomatic individuals (A0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of asymptomatic individuals (A0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="A0_input", type="number", min= 8 , max= 12 ,  value= 10 , placeholder="A0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='A0_slider',
@@ -398,7 +392,7 @@ app.layout = html.Div([
     ),
     
      #  I10 - The initial value of undiagnosed mild/moderate cases      input, slider 
-    html.Div(children = 'initial value of undiagnosed mild/moderate (I10)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of undiagnosed mild/moderate (I10)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="I10_input", type="number", min= 8 , max= 12 ,  value= 10 , placeholder="I10", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='I10_slider',
@@ -412,7 +406,7 @@ app.layout = html.Div([
             },  
     ),
      #   I20 - The initial value of undiagnosed severe/critical individuals input, slider 
-    html.Div(children = 'initial value of undiagnosed severe/critical (I20)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of undiagnosed severe/critical (I20)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="I20_input", type="number", min=  90, max=  110,  value= 100 , placeholder="I20", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='I20_slider',
@@ -426,7 +420,7 @@ app.layout = html.Div([
             },  
     ),
      #   T10 -   The initial value of   diagnosed mild/moderate individuals   input, slider 
-    html.Div(children = 'initial value of diagnosed mild/moderate cases (T10)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of diagnosed mild/moderate cases (T10)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="T10_input", type="number", min= 0 , max= 10000 ,  value= 0 , placeholder="T10", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='T10_slider',
@@ -440,7 +434,7 @@ app.layout = html.Div([
             },     
     ),
     #   T20 -   The initial value of   diagnosed severe/critical individuals   input, slider 
-    html.Div(children = 'initial value of diagnosed severe/critical individuals (T20)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of diagnosed severe/critical individuals (T20)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="T20_input", type="number", min= 0 , max= 10000 ,  value= 0 , placeholder="T20", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='T20_slider',
@@ -454,7 +448,7 @@ app.layout = html.Div([
             },     
     ),
     #   R0 -   The initial value of   recovered individuals   input, slider 
-    html.Div(children = 'initial value of recovered individuals (R0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of recovered individuals (R0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="R0_input", type="number", min= 0 , max= 10000000 ,  value= 0 , placeholder="R0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='R0_slider',
@@ -468,7 +462,7 @@ app.layout = html.Div([
             },     
     ),
     #   D0 -   The initial value of   dead individuals   input, slider 
-    html.Div(children = 'initial value of dead individuals (D0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of dead individuals (D0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="D0_input", type="number", min= 0 , max= 100000 ,  value= 0 , placeholder="D0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='D0_slider',
@@ -482,7 +476,7 @@ app.layout = html.Div([
             },     
     ),
     #   C0 -   The initial value of   confirmed cases   input, slider 
-    html.Div(children = 'initial value of confirmed cases (C0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'initial value of confirmed cases (C0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="C0_input", type="number", min= 0 , max= 100000 ,  value= 0 , placeholder="C0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='C0_slider',
@@ -503,13 +497,13 @@ app.layout = html.Div([
     html.Button('Disease', disabled='disabled',
                 style= {'background-color': '#616161',
                       'color': 'white',
-                      'fontSize': 16,
+                      'fontSize': 18,
                       'height': '1.8%',
                       'width': '90%',
                       'marginTop' : '10px'
                       }),
      # k1 input, slider
-    html.Div(children = 'incubation time (k1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'incubation time (k1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="k1_input", type="number", min=4.1, max=7,  value=5.2, placeholder="k1", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='k1_slider',
@@ -523,7 +517,7 @@ app.layout = html.Div([
             },
     ),
     # k2 mild/moderate stage to severe/critical stage (k2) input, slider
-    html.Div(children = 'mild/moderate stage to severe/critical stage (k2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'mild/moderate stage to severe/critical stage (k2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="k2_input", type="number", min=8, max=12, value=10, placeholder="k2", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='k2_slider',
@@ -537,7 +531,7 @@ app.layout = html.Div([
             },
     ),
     # gamma1 - The average recovery period for diagnosed mild/moderate cases (days) input, slider 
-    html.Div(children = 'recover period for mild/moderate (gamma1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'recover period for mild/moderate (gamma1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="gamma1_input", type="number", min=5.5, max=8.5,  value=7, placeholder="gamma1", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='gamma1_slider',
@@ -551,7 +545,7 @@ app.layout = html.Div([
             },     
     ),
     # gamma0 = 1/9.6620   # The mean time for natural recovery (days) input, slider 
-    html.Div(children = 'natural recovery time (gamma0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'natural recovery time (gamma0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="gamma0_input", type="number", min=8, max=11,  value=9.6620, placeholder="gamma0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='gamma0_slider',
@@ -565,7 +559,7 @@ app.layout = html.Div([
             },     
     ),
     # alpha1 = 1/6.9974  # The average period from symptoms onset to diagnose for mild/moderate cases (days) input, slider 
-    html.Div(children = 'symptoms onset to diagnose for mild/moderate cases (alpha1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'symptoms onset to diagnose for mild/moderate cases (alpha1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="alpha1_input", type="number", min=6, max=8,  value=6.9974, placeholder="alpha1", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='alpha1_slider',
@@ -579,7 +573,7 @@ app.layout = html.Div([
             },     
     ),
     # alpha2 = 1/2.0421           # The average diagnose period for severe/critical cases (days) input, slider 
-    html.Div(children = 'diagnose period for severe/critical cases (alpha2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'diagnose period for severe/critical cases (alpha2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="alpha2_input", type="number", min=1, max=3,  value=2.0421, placeholder="alpha2", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='alpha2_slider',
@@ -593,7 +587,7 @@ app.layout = html.Div([
             },     
     ),
     # gamma2 = 1/(21 - 1/alpha2)  # The average recovery period for diagnosed severe/critical cases input, slider 
-    html.Div(children = 'recovery period for diagnosed severe/critical (gamma2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'recovery period for diagnosed severe/critical (gamma2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="gamma2_input", type="number", min=18, max=24,  value=21, placeholder="gamma2", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='gamma2_slider',
@@ -607,7 +601,7 @@ app.layout = html.Div([
             },     
     ),
     # xi = 1/28   # The mean recovery period for infected family members (days) input, slider 
-    html.Div(children = 'recovery period for infected family members (xi)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'recovery period for infected family members (xi)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="xi_input", type="number", min=24, max=32,  value=28, placeholder="xi", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='xi_slider',
@@ -622,7 +616,7 @@ app.layout = html.Div([
     ),
 
    #   beta - The per-act transmission probability in contact withinfected individuals with symptoms input, slider 
-    html.Div(children = 'per-act transmission probability (beta)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'per-act transmission probability (beta)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="beta_input", type="number", min= .02 , max= .04 ,  value= .0305 , placeholder="beta", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='beta_slider',
@@ -637,7 +631,7 @@ app.layout = html.Div([
     ),
     
     #   epsilon - The reduction in per-act transmission probability ifinfection is in latent and asymptomatic stage     input, slider 
-    html.Div(children = 'reduction in per-act transmission probability ifinfection (epsilon)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'reduction in per-act transmission probability ifinfection (epsilon)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="epsilon_input", type="number", min=  .65, max= .85 ,  value= .75 , placeholder="epsilon", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='epsilon_slider',
@@ -651,7 +645,7 @@ app.layout = html.Div([
             },  
     ),
     #   rho - The probability that an individual is asymptomatic input, slider 
-    html.Div(children = 'asymptomatic probability (rho)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'asymptomatic probability (rho)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="rho_input", type="number", min= .4 , max= .6 ,  value= .5092 , placeholder="rho", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='rho_slider',
@@ -665,7 +659,7 @@ app.layout = html.Div([
             },  
     ),
     #      k3 - The progression rate from diagnosed mild/moderate stage to diagnosed severe/critical stage  input, slider 
-    html.Div(children = 'progression rate from diagnosed mild/moderate stage to diagnosed severe/critical (k3)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'progression rate from diagnosed mild/moderate stage to diagnosed severe/critical (k3)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="k3_input", type="number", min= .01 , max= .014 ,  value=  .0123, placeholder="k3", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='k3_slider',
@@ -679,7 +673,7 @@ app.layout = html.Div([
             },  
     ),
     #  m_ini - Base daily contact number in the public settings      input, slider 
-    html.Div(children = 'daily contact number (m_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'daily contact number (m_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="m_ini_input", type="number", min= 30 , max= 50 ,  value= 42 , placeholder="m_ini", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='m_ini_slider',
@@ -693,7 +687,7 @@ app.layout = html.Div([
             },  
     ),
     #  m0 - Change rate of daily contact number      input, slider 
-    html.Div(children = 'change rate of daily contact number (m0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'change rate of daily contact number (m0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="m0_input", type="number", min= .7 , max=  .9,  value= .7966 , placeholder="m0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='m0_slider',
@@ -707,7 +701,7 @@ app.layout = html.Div([
             },  
     ),
     #   t_ini - The time when the contact number is half of maximal and minimal contact number in public settings  (before reopening)     input, slider 
-    html.Div(children = 'time when contact number is half of maximal and minimal contact number in public settings before reopening (t_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'time when contact number is half of maximal and minimal contact number before reopening (t_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="t_ini_input", type="number", min= 26 , max= 30 ,  value= 28.0137 , placeholder="t_ini", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='t_ini_slider',
@@ -721,7 +715,7 @@ app.layout = html.Div([
             },  
     ),
     #  t_reopen - The time when the contact number is half of maximal and minimal contact number in public settings (after reopening)      input, slider 
-    html.Div(children = 'time when contact number is half of maximal and minimal contact number in public settings after reopening (t_reopen)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'time when contact number is half of maximal and minimal contact number after reopening (t_reopen)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="t_reopen_input", type="number", min=  90, max=  110,  value= 100 , placeholder="t_reopen", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='t_reopen_slider',
@@ -736,7 +730,7 @@ app.layout = html.Div([
     ),
     
     #    mu1 - Disease-induced death rate of undiagnosed severe/critical cases    input, slider 
-    html.Div(children = 'death rate of undiagnosed severe/critical (mu1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'death rate of undiagnosed severe/critical (mu1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="mu1_input", type="number", min= .04 , max= .06 ,  value= .05  , placeholder="mu1", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='mu1_slider',
@@ -750,7 +744,7 @@ app.layout = html.Div([
             },  
     ),
     #   mu2 - Disease-induced death rate of diagnosed severe/critical cases     input, slider 
-    html.Div(children = 'death rate of diagnosed severe/critical (mu2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'death rate of diagnosed severe/critical (mu2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="mu2_input", type="number", min= .1 , max= .12 ,  value= .1131 , placeholder="mu2", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='mu2_slider',
@@ -771,14 +765,14 @@ app.layout = html.Div([
     html.Button('Demographics', disabled='disabled',
                 style= {'background-color': '#616161',
                       'color': 'white',
-                      'fontSize': 16,
+                      'fontSize': 18,
                       'height': '1.8%',
                       'width': '90%',
                       'marginTop' : '10px'
                       }),
         
     # n0 population input, slider 
-    html.Div(children = 'Population (N0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'population (N0)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="N0_input", type="number", min=1000000, max=30000000, value=19542209, placeholder="N0", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='N0_slider',
@@ -793,7 +787,7 @@ app.layout = html.Div([
     ),
     
     # r family input, slider 
-    html.Div(children = 'members in a family (r)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'members in a family (r)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="r_input", type="number", min=2, max=6, value=4, placeholder="r", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='r_slider',
@@ -810,13 +804,13 @@ app.layout = html.Div([
     html.Button('Interventions', disabled='disabled',
                 style= {'background-color': '#616161',
                       'color': 'white',
-                      'fontSize': 16,
+                      'fontSize': 18,
                       'height': '1.8%',
                       'width': '90%',
                       'marginTop' : '10px'
                       }),
         #   ev - vaccine effectivness     input, slider 
-    html.Div(children = 'vaccine effectivness (ev)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'vaccine effectivness (ev)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="ev_input", type="number", min=  .8, max= 1 ,  value=  1, placeholder="ev", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='ev_slider',
@@ -830,7 +824,7 @@ app.layout = html.Div([
             },  
     ),
     #    w - vaccination rate     input, slider 
-    html.Div(children = 'vaccination rate (w)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'vaccination rate (w)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="w_input", type="number", min= 0 , max= .005 ,  value= 0 , placeholder="w", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='w_slider',
@@ -844,7 +838,7 @@ app.layout = html.Div([
             },  
     ),
     #    q_ini - Base percentage of handwashing before the epidemic    input, slider 
-    html.Div(children = 'handwashing percentage before the epidemic (q_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'handwashing percentage before the epidemic (q_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="q_ini_input", type="number", min= .65 , max= .85 ,  value= .77 , placeholder="q_ini", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='q_ini_slider',
@@ -858,7 +852,7 @@ app.layout = html.Div([
             },  
     ),
     #   qbar - Maximal percentage of handwashing during the epidemic     input, slider 
-    html.Div(children = 'handwashing percentage during the epidemic (qbar)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'handwashing percentage during the epidemic (qbar)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="qbar_input", type="number", min= .5 , max= 1 ,  value= .95 , placeholder="qbar", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='qbar_slider',
@@ -872,7 +866,7 @@ app.layout = html.Div([
             },  
     ),
     #   theta2 = .42                # The effectiveness of handwashing in preventing infection     input, slider 
-    html.Div(children = 'effectiveness of handwashing in preventing infection (theta2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'effectiveness of handwashing in preventing infection (theta2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="theta2_input", type="number", min= 0 , max= .75 ,  value= .42 , placeholder="theta2", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='theta2_slider',
@@ -886,7 +880,7 @@ app.layout = html.Div([
             },  
     ),
     #    p_ini = 0                   # Base percentage of face mask usage in the public settings before the Executive Order on face mask use    input, slider 
-    html.Div(children = 'percentage of face mask usage in the public settings before the Executive Order (p_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'face mask usage before the executive order (p_ini)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="p_ini_input", type="number", min=  0, max= .5 ,  value= 0 , placeholder="p_ini", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='p_ini_slider',
@@ -900,7 +894,7 @@ app.layout = html.Div([
             },  
     ),
     #   pbar - Percentage of face mask usage in the public settings after the Executive Order on face mask use     input, slider 
-    html.Div(children = 'face mask usage in the public settings after the Executive Order (pbar)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'face mask usage after the Executive Order (pbar)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="pbar_input", type="number", min= 0 , max= 1 ,  value= .766   , placeholder="pbar", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='pbar_slider',
@@ -914,7 +908,7 @@ app.layout = html.Div([
             },  
     ),
     #    tp - The time when face mask usage in the public settings is half of the maximal face mask usage rate    input, slider 
-    html.Div(children = 'time when face mask usage in the public settings is half of max (tp)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'time when face mask usage is half of max (tp)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="tp_input", type="number", min= 30 , max= 55 ,  value= 42 , placeholder="tp", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='tp_slider',
@@ -928,7 +922,7 @@ app.layout = html.Div([
             },  
     ),
     #   p2 - The usage percentage of mask in the households     input, slider 
-    html.Div(children = 'percentage of mask in the households (p2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'percentage of masks in households (p2)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="p2_input", type="number", min= 0 , max= 1 ,  value= 0 , placeholder="p2", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='p2_slider',
@@ -942,7 +936,7 @@ app.layout = html.Div([
             },  
     ),
     #   theta1 - The effectiveness of mask in preventing infection     input, slider 
-    html.Div(children = 'effectiveness of masks (theta1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "15px"}),
+    html.Div(children = 'effectiveness of masks (theta1)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="theta1_input", type="number", min= .75 , max= .95 ,  value= .85 , placeholder="theta1", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='theta1_slider',
@@ -991,7 +985,7 @@ app.layout = html.Div([
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
         html.Label(children = 'note: hover over graph to see Plotly graph controls on top right', style={'textAlign': 'center', 'color': '#b6e0f8', 'fontSize': 17, 'padding': "0px"}),
-        html.Label(children = 'Graph 1 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '30px'}),
+        html.Label(children = 'graph 1 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '30px'}),
         html.Div("population", id="N0_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
         html.Div("incubation time", id="k1_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
         html.Div("per-act transmission probability", id="beta_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
@@ -1001,7 +995,7 @@ app.layout = html.Div([
         html.Div("members in a family", id="r_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
         html.Div("natural recovery time", id="gamma0_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
 
-        html.Label(children = 'Graph 2 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '100%'}),
+        html.Label(children = 'graph 2 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '100%'}),
         html.Div("population (N0): 19542209", id="N0_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
         html.Div("incubation time (k1): 5.2", id="k1_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
         html.Div("per-act transmission probability (beta): 0.0305", id="beta_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
@@ -1025,7 +1019,36 @@ app.layout = html.Div([
         html.Div(style={'textAlign': 'center','display': 'flex', 'flex-direction': 'row'}, children=[
         
             html.Div(style={'padding': 10, 'flex': 1}, children=[
-
+                
+                html.Div(children = 'Welcome!', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+                html.Label('Welcome to the COVID-19 web app. The purpose of this app is to allow you to explore various COVID scenarios within a realistic mathematical model for COVID. You can vary a large number of parameters on the \'Controls\' tab which are shown in the table to the right, or just use the defaults for those not of interest to you. For example, you might be interested in the disease itself and variations with those parameters. Or, you are interested in social issues such as mask use and vaccines, and parameters related to those issues.', 
+                   style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
+                
+                html.Div(children = 'Instructions', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+                html.Div(children = 'Your main control is through the sliders. Reasonable default values for the sliders will appear, and you can change any or all of the values. The sliders are organized roughly in terms of: initial conditions, disease properties, demographics, and interventions.', style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "8px"}),
+                html.Div(children = 'Once you change the values of the sliders, simply click on the \'Plots\' tab to see the result. To try a new case, click on the \'Controls\' tab to return to the sliders and try something new.', style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "8px"}),
+                html.Div(children = 'The app also allows you to make direct comparisons using two plots for different cases. On the left side of the main page, there is a toggle switch. To make the first plot, leave the toggle where it is and set the sliders as you wish. Go the \'Plots\' tab to see that result. Return the main \'Controls\' tab, switch the toggle to the right, and choose new control values. Go back to the \'Plots\' tab and you will now see two plots, one for each case. This allows you to, for example, compare the impact of mask use or vaccines.', style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "8px"}),
+                
+                html.Div(children = 'Model flow diagram', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+                html.Img(src=app.get_asset_url('/chart.png'), style={'height':'350px', 'width':'660px'}),
+                
+                html.Div(children = 'Background', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px", 'marginTop' : '10px'}),
+                html.Label('The COVID model being used was created by Mingwang Shen, Lei Zhang, and Yan Li with the China-Australia Joint Research Center for Infectious Diseases. To learn more about COVID modeling and this specific model, please read the article cited below.',
+                            style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "8px"}),
+                html.Label(['This app was developed by Sam Bollman, an undergraduate at Michigan State University (MSU). ', html.A('David Butts', href='https://murillogroupmsu.com/david-j-butts/'), ', a graduate student at MSU, helped with coding and developing the final model we implemented. ', 'Finally, ', html.A('Prof. Murillo', href='https://murillogroupmsu.com/dr-michael-murillo/'), ' lead the project as part of the MSU Professorial Assistant program. If you have any corrections and/or comments, please contact us ', html.A('https://murillogroupmsu.com/dr-michael-murillo/', href='https://murillogroupmsu.com/dr-michael-murillo/'), '.'],
+                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "8px"}),                
+                html.Label(['Shen, Mingwang, et al. “Projected Covid-19 Epidemic in the United States in the Context of the Effectiveness of a Potential Vaccine and Implications for Social Distancing and Face Mask Use.” Vaccine, Elsevier, 27 Feb. 2021, ', html.A('https://www.sciencedirect.com/science/article/pii/S0264410X2100236X?via%3Dihub#!', href='https://www.sciencedirect.com/science/article/pii/S0264410X2100236X?via%3Dihub#!')],
+                           style={'textAlign': 'left', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px", 'marginLeft' : '15px'}),
+               
+                
+                
+                
+                
+                
+                ]),
+                
+                html.Div(style={'padding': 10, 'flex': 1}, children=[
+                
                 html.Div(children = 'Controls', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
 
                            # style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
@@ -1050,30 +1073,21 @@ app.layout = html.Div([
                         data=data.to_dict('records'),
                         columns=[{'id': c, 'name': c} for c in data.columns]),
                         
-                
-                
-                ]),
-                
-                html.Div(style={'padding': 10, 'flex': 1}, children=[
-                html.Div(children = 'Model flow diagram', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-                html.Img(src=app.get_asset_url('/chart.png'), style={'height':'350px', 'width':'660px'}),
-                html.Div(children = 'More information on r0', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px", 'marginTop' : '10px'}),
-                html.Label('r0 or r-naught represents the average amount of people that a single person will infect with a disease. In this model r0 is shown by dividing the infection rate by the recovery rate.',
-                           style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
-                html.Div(children =  'r0 values for common diseases(NPR):' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px", 'marginTop' : '5px'}),
-                html.Div(children =  'influenza: 1-2' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'ebola: 2' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'HIV: 4' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'SARS: 4' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'mumps: 10' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'measles: 18' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'r0 values for COVID-19(BBC): ' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px", 'marginTop' : '10px'}),
-                html.Div(children =  'original virus: 2.4-2.6' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'delta varient: 5-8' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children =  'omnicron varient: unknown (likely >8)' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
-                html.Div(children = 'Created By', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px", 'marginTop' : '15px'}),
-                html.Label('Sam Bollman, Michigan State University', 
-                            style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "15px"}),
+                # html.Div(children = 'More information on r0', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px", 'marginTop' : '10px'}),
+                # html.Label('r0 or r-naught represents the average amount of people that a single person will infect with a disease. In this model r0 is shown by dividing the infection rate by the recovery rate.',
+                #            style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "1px"}),
+                # html.Div(children =  'r0 values for common diseases(NPR):' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px", 'marginTop' : '5px'}),
+                # html.Div(children =  'influenza: 1-2' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'ebola: 2' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'HIV: 4' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'SARS: 4' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'mumps: 10' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'measles: 18' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'r0 values for COVID-19(BBC): ' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px", 'marginTop' : '10px'}),
+                # html.Div(children =  'original virus: 2.4-2.6' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'delta varient: 5-8' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+                # html.Div(children =  'omnicron varient: unknown (likely >8)' ,  style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
+       
                 ])
     ])   
         
@@ -2211,7 +2225,7 @@ def update_output(value):
         value = "top graph"
     else:
         value = "bottom graph"
-    return 'you are editing the {}.'.format(value) 
+    return 'you are editing the {}'.format(value) 
 
 @app.callback(  
               
@@ -2247,7 +2261,7 @@ def update_output(value):
 def print_values(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_value, r_value, gamma0_value, graph_toggle):
 
     if graph_toggle == False:
-        return 'population (N0): ''{}'.format(N0_value), "incubation time (k1): " "{}" .format(k1_value), "per-act transmission probability (beta): " "{}" .format(beta_value), "vaccine effectivness (ev): " "{}" .format(ev_value), "mask effectiveness (theta1): " "{}" .format(theta1_value), "daily contact number (m_ini): " "{}" .format(m_ini_value), "members in a family (r): " "{}" .format(r_value), "natural recovery time (gamma0): " "{}" .format(gamma0_value), dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
+        return 'population (N0): ''{}'.format(N0_value), "incubation time (k1): " "{}" .format(k1_value), "per-act transmission probability (beta): " "{}" .format(beta_value), "vaccine effectivness (ev): " "{}" .format(ev_value), "mask effectiveness (theta1): " "{}" .format(theta1_value), "daily contact number (m_ini): " "{}" .format(m_ini_value), "average members in a family (r): " "{}" .format(r_value), "natural recovery time (gamma0): " "{}" .format(gamma0_value), dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
     else:
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 'Population (N0): ''{}'.format(N0_value), "incubation time (k1): " "{}" .format(k1_value), "per-act transmission probability (beta): " "{}" .format(beta_value), "vaccine effectivness (ev): " "{}" .format(ev_value), "mask effectiveness (theta1): " "{}" .format(theta1_value), "daily contact number (m_ini): " "{}" .format(m_ini_value), "members in a family (r): " "{}" .format(r_value), "natural recovery time (gamma0): " "{}" .format(gamma0_value)
 # Update Graph callback, interaction
