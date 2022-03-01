@@ -6,17 +6,6 @@ Created on Wed Feb  2 10:38:29 2022
 @author: sambollman
 """
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Sep 30 21:06:51 2021
-
-@author: sambollman
-#https://community.plotly.com/t/dash-range-slider-which-able-to-interact-with-input-field-that-display-range-slider-value/49476
-#https://codepen.io/chriddyp/pen/bWLwgP.css
-#https://chrisalbon.com/
-"""
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -31,20 +20,14 @@ import dash_bootstrap_components as dbc
 import dash_daq as daq
 
 
-
-
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.DARKLY])
 server = app.server
-
-
-
 
 cell_type = "code"
 execution_count = 2
 
 
 # New York State
-
 k1 = 1/5.2                  # The mean incubation time (days)
 k2 = 1/10                   # The mean time from mild/moderate stage to severe/critical stage (days)
 r = 4                       # The mean number of members in a family
@@ -159,13 +142,9 @@ def covid_model(t,y,k1,k2,r,gamma1,gamma0,alpha1,alpha2,gamma2,xi,beta,epsilon,r
     return [sdot, vdot, nfdot, sfdot, vfdot, edot, adot, I1dot, I2dot, T1dot, T2dot, Rdot, Ddot, Cdot]
 
 
- 
   # day 0 = March 1 
   # day 245 = Oct 31 
 res = solve_ivp(covid_model, [0,244], [S0, V0, Nf0, Sf0, Vf0, E0, A0, I10, I20, T10, T20, R0, D0, 110], args=[k1,k2,r,gamma1,gamma0,alpha1,alpha2,gamma2,xi,beta,epsilon,rho,k3,m_ini,m0,t_ini,t_reopen,q_ini,qbar,theta2,p_ini,pbar,tp,p2,theta1,mu1,mu2,w, ev] ,dense_output=True)
-
-
-
 
 
 fig = plt.figure(figsize=(16,10)) 
@@ -209,9 +188,6 @@ plt.xlabel("time")
 ax.grid(True)
 
 plotly_fig = mpl_to_plotly(fig)
-
-
-
 
 
 N0 = 19_542_209             # Initial population
@@ -631,7 +607,7 @@ app.layout = html.Div([
     ),
     
     #   epsilon - The reduction in per-act transmission probability ifinfection is in latent and asymptomatic stage     input, slider 
-    html.Div(children = 'reduction in per-act transmission probability ifinfection (epsilon)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
+    html.Div(children = 'reduction in per-act transmission probability (epsilon)', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 18, 'padding': "15px"}),
     dcc.Input(debounce=True, id="epsilon_input", type="number", min=  .65, max= .85 ,  value= .75 , placeholder="epsilon", style={'textAlign': 'center', 'fontSize': 18, 'width':  '40%'}),
     dcc.Slider(
         id='epsilon_slider',
@@ -985,26 +961,14 @@ app.layout = html.Div([
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
         html.Label(children = 'note: hover over graph to see Plotly graph controls on top right', style={'textAlign': 'center', 'color': '#b6e0f8', 'fontSize': 17, 'padding': "0px"}),
-        html.Label(children = 'graph 1 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '30px'}),
-        html.Div("population", id="N0_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("incubation time", id="k1_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("per-act transmission probability", id="beta_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("vaccine effectivness", id="ev_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("mask effectiveness", id="theta1_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("daily contact number", id="m_ini_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("members in a family", id="r_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("natural recovery time", id="gamma0_output", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-
-        html.Label(children = 'graph 2 controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '100%'}),
-        html.Div("population (N0): 19542209", id="N0_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("incubation time (k1): 5.2", id="k1_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("per-act transmission probability (beta): 0.0305", id="beta_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("vaccine effectivness (ev): 1", id="ev_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("mask effectiveness (theta1): 0.85", id="theta1_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("daily contact number (m_ini): 42", id="m_ini_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("members in a family (r): 4", id="r_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-        html.Div("natural recovery time (gamma0): 9.662", id="gamma0_output2", style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "2px"}),
-
+        html.Label(children = 'Graph 1 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '30px'}),
+        html.Div(id = 'dt1'),
+       
+        html.Label(children = 'Graph 2 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '100%'}),
+        
+        html.Div(id = 'dt2'),
+        
+        
             ])
     
     ]),
@@ -1030,7 +994,7 @@ app.layout = html.Div([
                 html.Div(children = 'The app also allows you to make direct comparisons using two plots for different cases. On the left side of the main page, there is a toggle switch. To make the first plot, leave the toggle where it is and set the sliders as you wish. Go the \'Plots\' tab to see that result. Return the main \'Controls\' tab, switch the toggle to the right, and choose new control values. Go back to the \'Plots\' tab and you will now see two plots, one for each case. This allows you to, for example, compare the impact of mask use or vaccines.', style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "8px"}),
                 
                 html.Div(children = 'Model flow diagram', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
-                html.Img(src=app.get_asset_url('/chart.png'), style={'height':'350px', 'width':'660px'}),
+                html.Img(src=app.get_asset_url('/newchart.png'), style={'height':'350px', 'width':'660px'}),
                 
                 html.Div(children = 'Background', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px", 'marginTop' : '10px'}),
                 html.Label('The COVID model being used was created by Mingwang Shen, Lei Zhang, and Yan Li with the China-Australia Joint Research Center for Infectious Diseases. To learn more about COVID modeling and this specific model, please read the article cited below.',
@@ -1049,7 +1013,7 @@ app.layout = html.Div([
                 
                 html.Div(style={'padding': 10, 'flex': 1}, children=[
                 
-                html.Div(children = 'Controls', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
+                html.Div(children = 'Parameters', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "8px"}),
 
                            # style={'textAlign': 'center', 'color': '#bbbbbb', 'fontSize': 15, 'padding': "0px"}),
                 html.Div( style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 20, 'padding': "0px"}),
@@ -1059,10 +1023,12 @@ app.layout = html.Div([
                 dash.dash_table.DataTable(
                     style_data={
                 'whiteSpace': 'normal',
-                'lineHeight': '15px'
+                'lineHeight': '15px',
+                
                     },
-                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold'},
+                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center',},
                     style_cell={'backgroundColor': '#444444'},
+                    style_cell_conditional=[{'if': {'column_id': 'Description'},'textAlign': 'left'}, {'if': {'column_id': 'Variable'},'textAlign': 'center'}],
                     style_data_conditional=[
                             {
                                 "if": {"state": "selected"},
@@ -1124,6 +1090,47 @@ plotly_fig.update_layout(
                     font=dict(
                         size=22, color="#ffffff")    
         )
+
+@app.callback(
+    Output('dt1', 'children'),
+    Output('dt2', 'children'),
+    Input('N0_slider', 'value'),
+    Input('k1_slider', 'value'),
+    Input('beta_slider', 'value'),
+    Input('ev_slider', 'value'),
+    Input('theta1_slider', 'value'),
+    Input('m_ini_slider', 'value'),
+    Input('r_slider', 'value'),
+    Input('gamma0_slider', 'value'),
+    Input('compare_toggle', 'value')
+    )
+def data_table(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_value, r_value, gamma0_value, graph_toggle):
+    graph2_data = {"Variable": ['population', 'k1', 'beta', 'ev', 'theta1', 'm_ini', 'r', 'gamma0'],
+                   "Value": [N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_value, r_value, gamma0_value]  }
+    data2 = pd.DataFrame(graph2_data)
+    dt = dash.dash_table.DataTable(
+                    style_data={
+                'whiteSpace': 'normal',
+                'lineHeight': '15px',
+                
+                    },
+                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center',},
+                    style_cell={'backgroundColor': '#444444', 'textAlign': 'center'},
+                    style_data_conditional=[
+                            {
+                                "if": {"state": "selected"},
+                                "backgroundColor": "inherit !important",
+                                "border": "inherit !important",
+                                }],
+                    
+                        data=data2.to_dict('records'),
+                        columns=[{'id': d, 'name': d} for d in data2.columns])
+    if graph_toggle == False:
+        return dt, dash.no_update
+    else:
+        return dash.no_update,dt
+    
+
 
 # k1 input, slider sync
 @app.callback(
@@ -2227,43 +2234,7 @@ def update_output(value):
         value = "bottom graph"
     return 'you are editing the {}'.format(value) 
 
-@app.callback(  
-              
-    Output('N0_output', 'children'),
-    Output('k1_output', 'children'),
-    Output('beta_output', 'children'),
-    Output('ev_output', 'children'),
-    Output('theta1_output', 'children'),
-    Output('m_ini_output', 'children'),
-    Output('r_output', 'children'),
-    Output('gamma0_output', 'children'),
-    
-    Output('N0_output2', 'children'),
-    Output('k1_output2', 'children'),
-    Output('beta_output2', 'children'),
-    Output('ev_output2', 'children'),
-    Output('theta1_output2', 'children'),
-    Output('m_ini_output2', 'children'),
-    Output('r_output2', 'children'),
-    Output('gamma0_output2', 'children'),
-   
-    Input('N0_slider', 'value'),
-    Input('k1_slider', 'value'),
-    Input('beta_slider', 'value'),
-    Input('ev_slider', 'value'),
-    Input('theta1_slider', 'value'),
-    Input('m_ini_slider', 'value'),
-    Input('r_slider', 'value'),
-    Input('gamma0_slider', 'value'),
-    Input('compare_toggle', 'value') ,
-    )
 
-def print_values(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_value, r_value, gamma0_value, graph_toggle):
-
-    if graph_toggle == False:
-        return 'population (N0): ''{}'.format(N0_value), "incubation time (k1): " "{}" .format(k1_value), "per-act transmission probability (beta): " "{}" .format(beta_value), "vaccine effectivness (ev): " "{}" .format(ev_value), "mask effectiveness (theta1): " "{}" .format(theta1_value), "daily contact number (m_ini): " "{}" .format(m_ini_value), "average members in a family (r): " "{}" .format(r_value), "natural recovery time (gamma0): " "{}" .format(gamma0_value), dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
-    else:
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 'Population (N0): ''{}'.format(N0_value), "incubation time (k1): " "{}" .format(k1_value), "per-act transmission probability (beta): " "{}" .format(beta_value), "vaccine effectivness (ev): " "{}" .format(ev_value), "mask effectiveness (theta1): " "{}" .format(theta1_value), "daily contact number (m_ini): " "{}" .format(m_ini_value), "members in a family (r): " "{}" .format(r_value), "natural recovery time (gamma0): " "{}" .format(gamma0_value)
 # Update Graph callback, interaction
 @app.callback(
     Output('SIR-graph', 'figure'),
@@ -2321,8 +2292,6 @@ def print_values(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_v
     Input('N0_slider', 'value'),
 
 
-    
-    
     Input('compare_toggle', 'value') ,
     Input('range_slider', 'value') 
 
