@@ -962,7 +962,7 @@ app.layout = html.Div([
         html.Div(style={'padding': 10, 'flex': 1},children=[
         html.Label(children = 'note: hover over graph to see Plotly graph controls on top right', style={'textAlign': 'center', 'color': '#b6e0f8', 'fontSize': 17, 'padding': "0px"}),
         html.Label(children = 'Graph 1 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 16, 'padding': "3px", 'marginTop' : '30px'}),
-        html.Div(id = 'dt1'),
+        html.Div(id = 'dt1'), 
        
         html.Label(children = 'Graph 2 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 16, 'padding': "3px", 'marginTop' : '90%'}),
         
