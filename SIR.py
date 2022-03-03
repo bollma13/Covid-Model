@@ -974,7 +974,7 @@ app.layout = html.Div([
     ]),
     
     ])
-        
+         
     ]),
     
     
@@ -2417,9 +2417,10 @@ def update_graph(k1_value, k2_value,  r_value, gamma1_value, gamma0_value, alpha
         return  dash.no_update, plotly_fig
 
 
-if __name__ == '__main__':
-    app.run_server(debug = True)
+# if __name__ == '__main__':
+#     app.run_server(debug = True)
     
+app.run_server(port=1813,debug=True, host='localhost')
     
     
     
