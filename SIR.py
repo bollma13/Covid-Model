@@ -1024,7 +1024,7 @@ app.layout = html.Div([
                     style_data={
                 'whiteSpace': 'normal',
                 'lineHeight': '15px',
-                
+                'textAlign': 'center'
                     },
                     style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
                     style_cell={'backgroundColor': '#444444'},
@@ -1112,7 +1112,7 @@ def data_table(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_val
                     style_data={
                 'whiteSpace': 'normal',
                 'lineHeight': '15px',
-                 
+                'textAlign': 'center' 
                     },
                     style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
                     style_cell={'backgroundColor': '#444444', 'textAlign': 'center'},
