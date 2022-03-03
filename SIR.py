@@ -961,10 +961,10 @@ app.layout = html.Div([
         
         html.Div(style={'padding': 10, 'flex': 1},children=[
         html.Label(children = 'note: hover over graph to see Plotly graph controls on top right', style={'textAlign': 'center', 'color': '#b6e0f8', 'fontSize': 17, 'padding': "0px"}),
-        html.Label(children = 'Graph 1 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '30px'}),
+        html.Label(children = 'Graph 1 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 16, 'padding': "3px", 'marginTop' : '30px'}),
         html.Div(id = 'dt1'),
        
-        html.Label(children = 'Graph 2 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 15, 'padding': "0px", 'marginTop' : '100%'}),
+        html.Label(children = 'Graph 2 Controls:', style={'textAlign': 'center', 'color': '#ffffff', 'fontSize': 16, 'padding': "3px", 'marginTop' : '90%'}),
         
         html.Div(id = 'dt2'),
         
@@ -1024,11 +1024,12 @@ app.layout = html.Div([
                     style_data={
                 'whiteSpace': 'normal',
                 'lineHeight': '15px',
-                'textAlign': 'center'
+                
+                
                     },
                     style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
                     style_cell={'backgroundColor': '#444444'},
-                    #style_cell_conditional=[{'if': {'column_id': 'Description'},'textAlign': 'left'}, {'if': {'column_id': 'Variable'},'textAlign': 'center'}],
+                    style_cell_conditional=[{'if': {'column_id': 'Description'},'textAlign': 'left'}, {'if': {'column_id': 'Variable'},'textAlign': 'center'}],
                     style_data_conditional=[
                             {
                                 "if": {"state": "selected"},
@@ -1112,11 +1113,10 @@ def data_table(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_val
                     style_data={
                 'whiteSpace': 'normal',
                 'lineHeight': '15px',
-                'textAlign': 'center'
-               
+                
                     },
                     style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
-                    style_cell={'backgroundColor': '#444444'},
+                    style_cell={'backgroundColor': '#444444', 'textAlign': 'center'},
                     style_data_conditional=[
                             {
                                 "if": {"state": "selected"},
