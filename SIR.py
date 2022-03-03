@@ -1028,7 +1028,7 @@ app.layout = html.Div([
                     },
                     style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
                     style_cell={'backgroundColor': '#444444'},
-                    style_cell_conditional=[{'if': {'column_id': 'Description'},'textAlign': 'left'}, {'if': {'column_id': 'Variable'},'textAlign': 'center'}],
+                    #style_cell_conditional=[{'if': {'column_id': 'Description'},'textAlign': 'left'}, {'if': {'column_id': 'Variable'},'textAlign': 'center'}],
                     style_data_conditional=[
                             {
                                 "if": {"state": "selected"},
