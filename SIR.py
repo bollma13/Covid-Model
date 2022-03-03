@@ -1024,9 +1024,9 @@ app.layout = html.Div([
                     style_data={
                 'whiteSpace': 'normal',
                 'lineHeight': '15px',
-                'textAlign': 'center'
+                
                     },
-                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
+                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold'},
                     style_cell={'backgroundColor': '#444444'},
                     #style_cell_conditional=[{'if': {'column_id': 'Description'},'textAlign': 'left'}, {'if': {'column_id': 'Variable'},'textAlign': 'center'}],
                     style_data_conditional=[
@@ -1111,11 +1111,11 @@ def data_table(N0_value, k1_value, beta_value, ev_value, theta1_value, m_ini_val
     dt = dash.dash_table.DataTable(
                     style_data={
                 'whiteSpace': 'normal',
-                'lineHeight': '15px',
-                'textAlign': 'center' 
+                'lineHeight': '15px'
+               
                     },
-                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold', 'textAlign': 'center'},
-                    style_cell={'backgroundColor': '#444444', 'textAlign': 'center'},
+                    style_header={'backgroundColor': '#bbbbbb','fontWeight': 'bold'},
+                    style_cell={'backgroundColor': '#444444'},
                     style_data_conditional=[
                             {
                                 "if": {"state": "selected"},
